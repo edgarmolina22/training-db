@@ -61,7 +61,7 @@ const WEEKS = [
     optionalCycling:'30–45 min easy road ride (Z1, HR ≤120) if schedule allows. Already a built-in Monday + Thursday cycle this week — this would be a third, recreational ride. Skip if you feel taxed before the half.',
     hasRace:false,
     days:[
-      { name:'Mon', type:'strength', title:'Strength A — 30 min easy bike', detail:'30 min easy cycling. Strength circuit A — increase clamshell resistance if last week felt easy.', stats:'30 min cycling · Strength A' },
+      { name:'Mon', type:'cycle+strength', title:'Easy Cycling — 30 min + Strength A', detail:'30 min easy cycling. Strength circuit A — increase clamshell resistance if last week felt easy.', stats:'30 min cycling · Strength A' },
       { name:'Tue', type:'run', title:'Easy Run — 5 miles', detail:'9:45–10:15/mi, HR ≤143. Keep it truly easy — you have a half marathon in 12 days.', stats:'5 mi · HR ≤143' },
       { name:'Wed', type:'run+strength', title:'Easy Run — 5 miles + Strength B', detail:'9:45–10:15/mi. Strength B circuit after — controlled single-leg work, focus on left hip stability.', stats:'5 mi · Strength B' },
       { name:'Thu', type:'cycle', title:'Easy Cycling — 45 min', detail:'Z1–Z2 effort. Impact-free aerobic work — legs stay fresh for the weekend.', stats:'45 min · Z1–Z2' },
@@ -77,7 +77,7 @@ const WEEKS = [
     optionalCycling:'Skip the optional ride this week — half marathon Sunday. If you must spin, 20–30 min very easy on Wednesday max.',
     hasRace:true, raceName:'Half marathon — San Jose, CA · May 31 · flat course',
     days:[
-      { name:'Mon', type:'strength', title:'Strength A — 35 min easy bike', detail:'35 min easy cycling Z1. Strength circuit A — keep it light, legs need to stay fresh this week.', stats:'35 min cycling · Strength A' },
+      { name:'Mon', type:'cycle+strength', title:'Easy Cycling — 35 min + Strength A', detail:'35 min easy cycling Z1. Strength circuit A — keep it light, legs need to stay fresh this week.', stats:'35 min cycling · Strength A' },
       { name:'Tue', type:'run', title:'Easy Run — 5 miles', detail:'9:30–10:00/mi, HR ≤145. All easy, no strides. Last real mileage day before the race.', stats:'5 mi · HR ≤145' },
       { name:'Wed', type:'run+strength', title:'Easy Run — 5 miles + Strength B (light)', detail:'9:45–10:00/mi. Short and easy — just keeping legs turning over. Light Strength B after, half the sets.', stats:'5 mi easy · Strength B (light)' },
       { name:'Thu', type:'cycle', title:'Easy Cycling — 30 min', detail:'Z1 only — pure leg flush, no effort. Keep it short and easy ahead of the race.', stats:'30 min · Z1' },
@@ -92,7 +92,7 @@ const WEEKS = [
     optionalCycling:'30–45 min easy road ride if recovery feels good post-race. Friday evening or Sunday. Cap at 45 min — first tempo of the block is Wednesday, legs need to be there.',
     hasRace:false,
     days:[
-      { name:'Mon', type:'strength', title:'Strength A — 40 min easy bike', detail:'40 min easy cycling Z1 — legs will be tired from the race. Strength circuit A, light load. Foam roll IT band thoroughly.', stats:'40 min cycling · Strength A · foam roll' },
+      { name:'Mon', type:'cycle+strength', title:'Easy Cycling — 40 min + Strength A', detail:'40 min easy cycling Z1 — legs will be tired from the race. Strength circuit A, light load. Foam roll IT band thoroughly.', stats:'40 min cycling · Strength A · foam roll' },
       { name:'Tue', type:'run', title:'Easy Recovery Run — 5 miles', detail:'9:30–10:00/mi, HR ≤145. First run post-half. If IT band is tender, cut to 3 miles and stay easy.', stats:'5 mi · HR ≤145 · monitor IT band' },
       { name:'Wed', type:'run+strength', title:'Tempo Intro — 6 miles + Strength B', detail:'2 mi easy → 2 mi tempo (8:10–8:20/mi, HR 153–160) → 2 mi easy. First tempo of the rebuild — be conservative. Skip tempo and run easy if IT band is still talking to you. Strength B after.', stats:'6 mi · 2 mi @ 8:10–8:20 · Strength B' },
       { name:'Thu', type:'cycle', title:'Cycling — 50 min', detail:'Z1–Z2, comfortable effort. Include 4×2 min at Z3 if legs feel good.', stats:'50 min · Z1–Z2' },
@@ -107,7 +107,7 @@ const WEEKS = [
     optionalCycling:'30–45 min easy road ride OK if you want it. Friday evening best — gives 36+ hours to Sunday long run. Avoid the day before or after Tuesday’s 800m session.',
     hasRace:false,
     days:[
-      { name:'Mon', type:'strength', title:'Strength B — 40 min easy bike', detail:'40 min easy cycling. Strength circuit B — step-downs especially important for IT band.', stats:'40 min cycling · Strength B' },
+      { name:'Mon', type:'cycle+strength', title:'Easy Cycling — 40 min + Strength B', detail:'40 min easy cycling. Strength circuit B — step-downs especially important for IT band.', stats:'40 min cycling · Strength B' },
       { name:'Tue', type:'run', title:'Easy Run — 6 miles', detail:'9:15–9:45/mi, HR ≤147.', stats:'6 mi' },
       { name:'Wed', type:'run+strength', title:'800m Repeats — 7 miles + Strength A', detail:'2 mi easy → 6×800m at 3:55–4:05 per 800 (~7:50–8:10/mi) with 90 sec recovery → 2 mi easy. Strength A after.', stats:'7 mi · 6×800m · Strength A' },
       { name:'Thu', type:'cycle', title:'Cycling — 60 min', detail:'Z1–Z2 steady. Good legs after Wednesday intervals.', stats:'60 min · Z1–Z2' },
@@ -137,7 +137,7 @@ const WEEKS = [
     num:7, phase:'build', dates:'Jun 22–28', miles:36, note:'Build phase begins. Tempo extends to 4 miles and the long run reaches 16 miles for the first time.',
     hasRace:false,
     days:[
-      { name:'Mon', type:'strength', title:'Strength A — 50 min cycling', detail:'50 min cycling Z1–Z2. Strength circuit A — increase load on split squats if bodyweight feels easy.', stats:'50 min cycling · Strength A' },
+      { name:'Mon', type:'cycle+strength', title:'Cycling — 50 min + Strength A', detail:'50 min cycling Z1–Z2. Strength circuit A — increase load on split squats if bodyweight feels easy.', stats:'50 min cycling · Strength A' },
       { name:'Tue', type:'run', title:'Easy Run — 6 miles', detail:'9:00–9:30/mi, HR ≤148.', stats:'6 mi' },
       { name:'Wed', type:'run+strength', title:'Tempo Run — 8 miles + Strength B', detail:'2 mi easy → 4 mi tempo (8:00–8:10/mi, HR 155–162) → 2 mi easy. Strength B after.', stats:'8 mi · 4 mi tempo · Strength B' },
       { name:'Thu', type:'cycle', title:'Cycling — 60 min', detail:'Z1–Z2 with 5×2 min Z3. Building cycling fitness alongside running.', stats:'60 min · with intervals' },
@@ -151,7 +151,7 @@ const WEEKS = [
     num:8, phase:'build', dates:'Jun 29–Jul 5', miles:38, note:'1km repeats. Aim for even splits across all 5 reps — resist going out hard on rep 1.',
     hasRace:false,
     days:[
-      { name:'Mon', type:'strength', title:'Strength A — 50 min cycling', detail:'50 min cycling. Strength A with added resistance on all banded exercises.', stats:'50 min cycling · Strength A' },
+      { name:'Mon', type:'cycle+strength', title:'Cycling — 50 min + Strength A', detail:'50 min cycling. Strength A with added resistance on all banded exercises.', stats:'50 min cycling · Strength A' },
       { name:'Tue', type:'run', title:'Tempo Run — 8 miles', detail:'2 mi easy → 4 mi tempo (8:00–8:10/mi) → 2 mi easy.', stats:'8 mi · 4 mi @ 8:00–8:10' },
       { name:'Wed', type:'run+strength', title:'Easy Run — 6 miles + Strength B', detail:'9:00–9:30/mi recovery run. Strength B after.', stats:'6 mi easy · Strength B' },
       { name:'Thu', type:'run', title:'1km Repeats — 7 miles', detail:'2 mi easy → 5×1km at 8:05–8:20/mi with 90 sec recovery → 2 mi easy.', stats:'7 mi · 5×1km' },
@@ -165,7 +165,7 @@ const WEEKS = [
     num:9, phase:'build', dates:'Jul 6–12', miles:39, note:'First 40-mile week. Summer heat means easy runs should be HR-governed, not pace-governed. Slow down to stay aerobic.',
     hasRace:false,
     days:[
-      { name:'Mon', type:'strength', title:'Strength B — 55 min cycling', detail:'55 min cycling Z1–Z2. Strength B — Copenhagen planks should feel challenging by now.', stats:'55 min cycling · Strength B' },
+      { name:'Mon', type:'cycle+strength', title:'Cycling — 55 min + Strength B', detail:'55 min cycling Z1–Z2. Strength B — Copenhagen planks should feel challenging by now.', stats:'55 min cycling · Strength B' },
       { name:'Tue', type:'run', title:'Easy Run — 7 miles', detail:'9:00–9:30/mi, HR ≤148. If temp is above 75°F by the time you run, allow up to 10:00/mi.', stats:'7 mi · HR ≤148' },
       { name:'Wed', type:'run+strength', title:'Rolling 800s — 7 miles + Strength A', detail:'2 mi easy → 5×800m at 3:55–4:05 (7:50–8:10/mi) with 90 sec jog recovery → 2 mi easy. Strength A.', stats:'7 mi · 5×800m · Strength A' },
       { name:'Thu', type:'cycle', title:'Cycling — 65 min', detail:'Z1–Z2. Active recovery from Wednesday. Stay hydrated — July heat.', stats:'65 min' },
@@ -194,7 +194,7 @@ const WEEKS = [
     num:11, phase:'peak', dates:'Jul 20–26', miles:42, note:'Peak week. The 20-mile long run is the most important session of the entire plan. Early start, full fueling, respect the distance.',
     hasRace:false,
     days:[
-      { name:'Mon', type:'strength', title:'Strength A — 55 min cycling', detail:'55 min cycling Z1–Z2. Strength A — maintain intensity but prioritize form over load.', stats:'55 min cycling · Strength A' },
+      { name:'Mon', type:'cycle+strength', title:'Cycling — 55 min + Strength A', detail:'55 min cycling Z1–Z2. Strength A — maintain intensity but prioritize form over load.', stats:'55 min cycling · Strength A' },
       { name:'Tue', type:'run', title:'Easy Run — 7 miles', detail:'9:00–9:30/mi, HR ≤148.', stats:'7 mi' },
       { name:'Wed', type:'run+strength', title:'Tempo Run — 9 miles + Strength B', detail:'2 mi easy → 5 mi tempo (7:58–8:08/mi, HR 155–165) → 2 mi easy. Longest tempo of the block. Strength B after.', stats:'9 mi · 5 mi tempo · Strength B' },
       { name:'Thu', type:'cycle', title:'Cycling — 60 min', detail:'Z1–Z2. Legs may be heavy from Wednesday — keep it easy.', stats:'60 min · easy' },
@@ -208,7 +208,7 @@ const WEEKS = [
     num:12, phase:'peak', dates:'Jul 27–Aug 2', miles:38, note:'Second peak week. Slightly reduced volume but high quality. 18-mile long run with marathon pace miles at the end.',
     hasRace:false,
     days:[
-      { name:'Mon', type:'strength', title:'Strength B — 50 min easy cycling', detail:'50 min cycling Z1. Strength B — legs may still be recovering from the 20-miler.', stats:'50 min cycling · Strength B' },
+      { name:'Mon', type:'cycle+strength', title:'Easy Cycling — 50 min + Strength B', detail:'50 min cycling Z1. Strength B — legs may still be recovering from the 20-miler.', stats:'50 min cycling · Strength B' },
       { name:'Tue', type:'run', title:'Easy Run — 7 miles', detail:'9:00–9:30/mi. Take it easy — you\'re coming off a massive week.', stats:'7 mi · easy recovery' },
       { name:'Wed', type:'run+strength', title:'1km Repeats — 7 miles + Strength A', detail:'2 mi easy → 5×1km at 8:00–8:15/mi with 90 sec recovery → 2 mi easy. These should feel controlled. Strength A after.', stats:'7 mi · 5×1km · Strength A' },
       { name:'Thu', type:'cycle', title:'Cycling — 55 min', detail:'Z1–Z2. Active recovery.', stats:'55 min' },
@@ -462,37 +462,22 @@ function splitWorkouts(d, weekStrength) {
   const stats = d.stats;
   const type = d.type;
 
-  // Pattern 1: Mon "Strength X + easy bike/cycling" → cycling block + strength block
-  if(type === 'strength' && (title.includes('+ easy bike') || title.includes('+ cycling') || title.includes('+ easy cycling'))) {
-    const plusIdx = title.indexOf('+');
-    const strengthTitle = title.slice(0, plusIdx).trim();
-    const cycleTitle = title.slice(plusIdx + 1).trim();
-    const detailParts = detail.split('. ');
-    const cycleDetail = detailParts[0] || detail;
-    const strengthDetail = detailParts.slice(1).join('. ') || detail;
-    const statsParts = stats.split('·').map(s=>s.trim()).filter(Boolean);
-    const cycleStats = statsParts.filter(s=>s.toLowerCase().includes('min')||s.toLowerCase().includes('cycling')||s.toLowerCase().includes('z1')||s.toLowerCase().includes('z2')).join(' · ');
-    const strengthStats = statsParts.filter(s=>s.toLowerCase().includes('strength')||s.toLowerCase().includes('foam')).join(' · ');
-    return [
-      { type:'cycle',    title:cycleTitle,    detail:cycleDetail,    stats:cycleStats||stats },
-      { type:'strength', title:strengthTitle, detail:strengthDetail, stats:strengthStats||stats },
-    ];
-  }
-
-  // Pattern 2: Wed "Run description + Strength X" → run block + strength block
-  if(type === 'run+strength') {
+  // Pattern: "<Activity> + Strength X" → activity block + strength block.
+  // Handles both Wed run+strength days and Mon cycle+strength days.
+  if(type === 'run+strength' || type === 'cycle+strength') {
     const plusIdx = title.lastIndexOf(' + Strength');
     if(plusIdx > -1) {
-      const runTitle = title.slice(0, plusIdx).trim();
+      const firstType = type === 'cycle+strength' ? 'cycle' : 'run';
+      const firstTitle = title.slice(0, plusIdx).trim();
       const strengthTitle = title.slice(plusIdx + 3).trim();
       const strengthIdx = detail.indexOf('Strength');
-      const runDetail = strengthIdx > 0 ? detail.slice(0, strengthIdx).replace(/\.\s*$/, '').trim() : detail;
-      const strengthDetail = strengthIdx > 0 ? detail.slice(strengthIdx).trim() : 'Strength circuit after run.';
+      const firstDetail = strengthIdx > 0 ? detail.slice(0, strengthIdx).replace(/\.\s*$/, '').trim() : detail;
+      const strengthDetail = strengthIdx > 0 ? detail.slice(strengthIdx).trim() : `Strength circuit after ${firstType==='cycle'?'cycling':'run'}.`;
       const statsParts = stats.split('·').map(s=>s.trim()).filter(Boolean);
-      const runStats = statsParts.filter(s=>!s.toLowerCase().includes('strength')).join(' · ');
+      const firstStats = statsParts.filter(s=>!s.toLowerCase().includes('strength')).join(' · ');
       const strengthStats = statsParts.filter(s=>s.toLowerCase().includes('strength')).join(' · ');
       return [
-        { type:'run',      title:runTitle,      detail:runDetail,      stats:runStats||stats },
+        { type:firstType, title:firstTitle,    detail:firstDetail,    stats:firstStats||stats },
         { type:'strength', title:strengthTitle, detail:strengthDetail, stats:strengthStats||strengthTitle },
       ];
     }
@@ -783,7 +768,7 @@ function renderPlan() {
       wBlock.dataset.week=week.num;
       // Expand combined types (e.g. 'run+strength') into individual component types
       const expandType = t => t === 'run+strength' ? ['run','strength']
-                            : t === 'strength' && week.days.find(d=>d.type===t&&(d.title.includes('+ easy bike')||d.title.includes('+ cycling')||d.title.includes('+ easy cycling'))) ? ['cycle','strength']
+                            : t === 'cycle+strength' ? ['cycle','strength']
                             : [t];
       const badges = week.days.reduce((acc,d)=>{
         expandType(d.type).forEach(t=>{ if(!acc.includes(t)) acc.push(t); });
