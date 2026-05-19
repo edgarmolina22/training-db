@@ -107,7 +107,7 @@ Hard-reload the browser (Cmd-Shift-R) so the cached JSON files re-fetch.
 
 | Phase | Weeks | Dates | Miles |
 |-------|-------|-------|-------|
-| 1 — Rehab | 1–2 | May 11–24 | 51 |
+| 1 — Rehab | 1–2 | May 11–24 | 52 |
 | 2 — Rebuild | 3–6 | May 25–Jun 21 | 114 |
 | 3 — Build | 7–10 | Jun 22–Jul 19 | 145 |
 | 4 — Peak | 11–12 | Jul 20–Aug 2 | 80 |

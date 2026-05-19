@@ -57,12 +57,12 @@ const WEEKS = [
     strength:{ title:'Daily ITB activation (every day, ~10 min)', exercises:ITB_DAILY },
   },
   {
-    num:2, phase:'rehab', dates:'May 18–24', miles:25, note:'Second and final rehab week — build mileage gently heading into the half marathon on May 31. No intensity, no hills. All easy.',
+    num:2, phase:'rehab', dates:'May 18–24', miles:26, note:'Second and final rehab week — build mileage gently heading into the half marathon on May 31. No intensity, no hills. All easy.',
     optionalCycling:'30–45 min easy road ride (Z1, HR ≤120) if schedule allows. Already a built-in Monday + Thursday cycle this week — this would be a third, recreational ride. Skip if you feel taxed before the half.',
     hasRace:false,
     days:[
       { name:'Mon', type:'strength', title:'Strength A + easy bike', detail:'30 min easy cycling. Strength circuit A — increase clamshell resistance if last week felt easy.', stats:'30 min cycling · Strength A' },
-      { name:'Tue', type:'run', title:'Easy run — 4 miles', detail:'9:45–10:15/mi, HR ≤143. Keep it truly easy — you have a half marathon in 10 days.', stats:'4 mi · HR ≤143' },
+      { name:'Tue', type:'run', title:'Easy run — 5 miles', detail:'9:45–10:15/mi, HR ≤143. Keep it truly easy — you have a half marathon in 12 days.', stats:'5 mi · HR ≤143' },
       { name:'Wed', type:'run+strength', title:'Easy run — 5 miles + Strength B', detail:'9:45–10:15/mi. Strength B circuit after — controlled single-leg work, focus on left hip stability.', stats:'5 mi · Strength B' },
       { name:'Thu', type:'cycle', title:'Easy cycling — 45 min', detail:'Z1–Z2 effort. Impact-free aerobic work — legs stay fresh for the weekend.', stats:'45 min · Z1–Z2' },
       { name:'Fri', type:'run', title:'Easy run — 5 miles + strides', detail:'9:30–10:00/mi. Add 4 strides (20 sec each) if IT band is completely pain-free.', stats:'5 mi + strides · HR ≤145' },
