@@ -1,0 +1,22 @@
+# Local data — too big or sensitive for git
+training.db
+training.db-wal
+training.db-shm
+training.db-journal
+garmin_fit/
+*.bak
+*.backup
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# OS / IDE
+.DS_Store
+.vscode/
+.idea/
+
+# FUSE leftovers from Cowork sessions
+.fuse_hidden*

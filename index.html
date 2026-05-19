@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Edgar Molina Training Hub — Santa Rosa Marathon</title>
+<meta name="description" content="15-week marathon training plan for Edgar Molina targeting the Santa Rosa Marathon on Aug 23, 2026. Includes run analytics, cycling data, IT band strength program, and Garmin activity sync.">
+<meta property="og:title" content="Edgar Molina Training Hub — Santa Rosa Marathon">
+<meta property="og:description" content="15-week marathon training plan · Aug 23, 2026 · Goal: 3:58–4:05 · Run analytics · Cycling · IT band rehab">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://edgarmolina22.github.io/edgar-molina-training-hub/">
+<meta property="og:image" content="https://edgarmolina22.github.io/edgar-molina-training-hub/preview.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Edgar Molina Training Hub — Santa Rosa Marathon">
+<meta name="twitter:description" content="15-week marathon training plan · Aug 23, 2026 · Goal: 3:58–4:05">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23141210'/><text x='16' y='22' font-size='18' text-anchor='middle' fill='%23c84b2f'>🏃</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"
+  onerror="document.getElementById('chartFallback')&&(document.getElementById('chartFallback').style.display='block')"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ══ ACTIVITY DETAIL MODAL (DB-powered) ══ -->
+<div id="actModal" class="act-modal" data-action="backdrop-act">
+  <div class="act-modal-inner">
+    <button class="act-modal-close" data-action="close-act-modal">×</button>
+    <div class="act-modal-header">
+      <div class="act-modal-title" id="actModalTitle">—</div>
+      <div class="act-modal-sub" id="actModalSub">—</div>
+    </div>
+    <div class="act-modal-tabs">
+      <div class="act-modal-tab active" data-action="show-act-tab" data-tab="splits">Splits</div>
+      <div class="act-modal-tab" data-action="show-act-tab" data-tab="zones">HR Zones</div>
+      <div class="act-modal-tab" data-action="show-act-tab" data-tab="drift">Form Drift</div>
+      <div class="act-modal-tab" id="actMapTab" data-action="show-act-tab" data-tab="map">Map</div>
+    </div>
+    <div class="act-modal-body" id="actModalBody">
+      <div class="no-db-msg">Loading…</div>
+    </div>
+  </div>
+</div>
+
+<div id="shareModal" class="share-modal" data-action="backdrop-share">
+  <div class="share-modal-inner">
+    <div class="share-modal-head">
+      <span class="share-modal-title">Share activity</span>
+      <button class="share-modal-close" data-action="close-share-modal">×</button>
+    </div>
+    <div class="share-style-row">
+      <button class="share-style-btn active" data-style="1" data-action="set-share-style">Bottom pill</button>
+      <button class="share-style-btn" data-style="2" data-action="set-share-style">Corner tag</button>
+      <button class="share-style-btn" data-style="3" data-action="set-share-style">Left stripe</button>
+      <button class="share-style-btn" data-style="4" data-action="set-share-style">Top bar</button>
+      <button class="share-style-btn" data-style="5" data-action="set-share-style">Full card</button>
+      <button class="share-style-btn" data-style="6" data-action="set-share-style">Full transparent</button>
+    </div>
+    <div class="share-card-wrap" id="shareCardWrap"></div>
+    <div class="share-actions" style="margin-top:12px;">
+      <button class="share-btn primary" data-action="download-share-card">↗ Save / Share</button>
+    </div>
+  </div>
+</div>
+
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-logo">Edgar Molina <span>Training Hub</span></div>
+  <div class="loading-sub">Syncing your data…</div>
+  <div class="loading-bar-wrap"><div class="loading-bar"></div></div>
+</div>
+
+<div class="masthead">
+  <div class="masthead-inner">
+    <div>
+      <div class="masthead-eyebrow">Edgar Molina Training Hub</div>
+      <div class="masthead-title" id="mastheadTitle">Training <span>Plan</span></div>
+    </div>
+  </div>
+  <div class="masthead-meta">
+    <div class="meta-item">
+      <strong>Santa Rosa Marathon</strong>
+      Aug 23, 2026 · Primary race
+    </div>
+    <div class="meta-item meta-item--sep">
+      <strong>San Jose Half Marathon</strong>
+      May 31, 2026 · Tune-up race
+    </div>
+    <div class="meta-item meta-item--sep" id="headerWeek">
+      <strong id="headerWeekNum">Week 1</strong>
+      <span id="headerWeekLabel">of 15 · Rehab</span>
+    </div>
+    <div class="meta-item meta-item--sep">
+      <span id="dbStatusBadge" class="db-badge db-disconnected" title="Start server: python serve.py in training-db folder"><span class="db-dot"></span>DB offline</span>
+    </div>
+  </div>
+</div>
+
+<div class="upload-bar">
+  <span class="upload-label-txt">Garmin sync</span>
+  <label class="drop-zone" id="dropZone">
+    <span id="dropText">Upload running.csv or cycling.csv</span>
+    <input type="file" id="garminFile" accept=".csv">
+  </label>
+  <span class="upload-status" id="uploadStatus"></span>
+  <button class="clear-btn" id="clearBtn" data-action="clear-garmin" style="display:none">✕ Clear</button>
+</div>
+
+<div class="tab-nav">
+  <button class="tab-btn active" data-action="show-tab" data-tab="plan">Training Plan <span class="tab-count">15 wks</span></button>
+  <button class="tab-btn" data-action="show-tab" data-tab="analytics">Analytics <span class="tab-count" id="analyticsCount">loading…</span></button>
+</div>
+
+<!-- ══ PLAN TAB ══ -->
+<div class="tab-panel active" id="tab-plan">
+  <div class="plan-controls">
+    <span>Show:</span>
+    <button class="filter-btn active" data-action="filter-phase" data-phase="all">All weeks</button>
+    <button class="filter-btn" data-action="filter-phase" data-phase="rehab">Phase 1 — Rehab</button>
+    <button class="filter-btn" data-action="filter-phase" data-phase="rebuild">Phase 2 — Rebuild</button>
+    <button class="filter-btn" data-action="filter-phase" data-phase="build">Phase 3 — Build</button>
+    <button class="filter-btn" data-action="filter-phase" data-phase="peak">Phase 4 — Peak</button>
+    <button class="filter-btn" data-action="filter-phase" data-phase="taper">Phase 5 — Taper</button>
+    <div style="flex:1"></div>
+    <button class="filter-btn" id="expandAllBtn" data-action="toggle-all-weeks" style="margin-left:auto">Expand all</button>
+  </div>
+  <div class="plan-legend">
+    <div class="leg"><div class="leg-dot" style="background:var(--run)"></div>Running</div>
+    <div class="leg"><div class="leg-dot" style="background:var(--strength)"></div>Strength</div>
+    <div class="leg"><div class="leg-dot" style="background:var(--cycle)"></div>Cycling</div>
+    <div class="leg"><div class="leg-dot" style="background:var(--race)"></div>Race</div>
+    <div class="leg"><div class="leg-dot" style="background:var(--rest)"></div>Rest</div>
+    <div class="leg"><div class="leg-dot" style="background:var(--strength)"></div>✓ Completed (Garmin)</div>
+  </div>
+  <div id="planHealth"></div>
+  <div id="progressSection"></div>
+  <div id="strengthReference"></div>
+  <div id="planMain"></div>
+</div>
+
+<!-- ══ ANALYTICS TAB ══ -->
+<div class="tab-panel" id="tab-analytics">
+
+  <!-- Analytics sub-nav -->
+  <div class="analytics-subnav">
+    <button class="anav active" data-action="set-analytics-page" data-page="overview">Overview</button>
+    <button class="anav" data-action="set-analytics-page" data-page="running">Running</button>
+    <button class="anav" data-action="set-analytics-page" data-page="cycling">Cycling</button>
+    <div class="anav-sep"></div>
+    <span id="subFilterLabel" style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-right:4px;display:none;">Type</span>
+    <span id="runSubFilters">
+      <button class="filt active" data-run="all"       data-action="set-run-sub" data-sub="all">All runs</button>
+      <button class="filt"        data-run="easy"      data-action="set-run-sub" data-sub="easy">Easy</button>
+      <button class="filt"        data-run="long"      data-action="set-run-sub" data-sub="long">Long</button>
+      <button class="filt"        data-run="tempo"     data-action="set-run-sub" data-sub="tempo">Tempo</button>
+      <button class="filt"        data-run="intervals" data-action="set-run-sub" data-sub="intervals">Intervals</button>
+      <button class="filt"        data-run="hills"     data-action="set-run-sub" data-sub="hills">Hills</button>
+      <button class="filt"        data-run="race"      data-action="set-run-sub" data-sub="race">Races</button>
+    </span>
+    <span id="cycleSubFilters">
+      <button class="filt active" data-cyc="all"     data-action="set-cycle-sub" data-sub="all">All rides</button>
+      <button class="filt"        data-cyc="virtual"  data-action="set-cycle-sub" data-sub="virtual">Virtual</button>
+      <button class="filt"        data-cyc="road"     data-action="set-cycle-sub" data-sub="road">Road</button>
+    </span>
+    <div class="anav-sep"></div>
+    <button class="filt active" data-range="all" data-action="set-range-filter" data-range="all">All time</button>
+    <button class="filt" data-range="90" data-action="set-range-filter" data-range="90">Last 90d</button>
+    <button class="filt" data-range="30" data-action="set-range-filter" data-range="30">Last 30d</button>
+    <span class="run-count" id="runCount">60 runs</span>
+  </div>
+
+  <div id="chartFallback" style="display:none;margin:20px 40px;padding:12px 16px;background:#fdf3e8;border-left:3px solid #b85c00;font-family:var(--mono);font-size:12px;color:#b85c00;border-radius:0 4px 4px 0;">
+    ⚠ Charts could not load — check your internet connection and refresh the page. The training plan tab is unaffected.
+  </div>
+
+  <!-- ── OVERVIEW PAGE ── -->
+  <div id="analyticsPage-overview" class="analytics-page">
+    <div class="stat-strip" id="statStrip"></div>
+    <div id="racePredictor"></div>
+    <div class="charts-grid">
+      <div class="chart-card chart-full">
+        <div class="chart-card-header"><span class="chart-card-title">Weekly volume by activity type</span><span class="chart-card-sub">stacked · running + cycling</span></div>
+        <div class="chart-card-body"><canvas id="weeklyStackedChart"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-header"><span class="chart-card-title">Weekly training load</span><span class="chart-card-sub">Aerobic TE · run + cycle · Jan 2026 onward</span></div>
+        <div class="chart-card-body"><canvas id="trainingLoadChart"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-header"><span class="chart-card-title">HR zone distribution</span><span class="chart-card-sub">% by avg HR zone · run + cycle combined</span></div>
+        <div class="chart-card-body" style="padding-bottom:14px;"><canvas id="hrZoneChart" style="max-height:60px;"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-header"><span class="chart-card-title">Recovery balance</span><span class="chart-card-sub">% of weekly runs in Z1/Z2 (avg HR &lt;152) · 80% target</span></div>
+        <div class="chart-card-body"><canvas id="recoveryChart"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-header"><span class="chart-card-title">Elevation gain by week</span><span class="chart-card-sub">ft · stacked run + cycle · grouped by week</span></div>
+        <div class="chart-card-body"><canvas id="elevationChart"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── RUNNING PAGE ── -->
+  <div id="analyticsPage-running" class="analytics-page" style="display:none;">
+    <div class="stat-strip" id="statStripRun"></div>
+    <div id="racePredictorRun"></div>
+    <div id="lastRunSnapshot"></div>
+    <!-- ── Section: Pace & Volume ── -->
+    <div class="an-section">
+      <div class="an-section-header" data-action="toggle-section" data-section-key="run-pace-volume">
+        <span class="an-section-chevron">▼</span>
+        <span class="an-section-label">Pace &amp; Volume</span>
+        <span class="an-section-count">3 charts</span>
+        <span class="an-section-kpi" id="an-kpi-run-pace-volume"></span>
+      </div>
+      <div class="an-section-body" id="an-body-run-pace-volume">
+        <div class="charts-grid">
+          <div class="chart-card chart-full">
+            <div class="chart-card-header"><span class="chart-card-title">Pace over time</span><span class="chart-card-sub">min/mi · 5-run rolling avg · races &amp; IT band flares marked</span></div>
+            <div class="chart-card-body" style="padding-bottom:18px;"><canvas id="paceChart"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-card-header"><span class="chart-card-title">Pace progression</span><span class="chart-card-sub">4-week rolling avg · easy runs ≥3mi · excludes races</span></div>
+            <div class="chart-card-body"><canvas id="paceProgressChart"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-card-header"><span class="chart-card-title">Long run progression</span><span class="chart-card-sub">all runs ≥8mi · monthly peak highlighted</span></div>
+            <div class="chart-card-body"><canvas id="longRunChart"></canvas></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Section: Cardio ── -->
+    <div class="an-section">
+      <div class="an-section-header" data-action="toggle-section" data-section-key="run-cardio">
+        <span class="an-section-chevron">▼</span>
+        <span class="an-section-label">Cardio</span>
+        <span class="an-section-count">3 charts</span>
+        <span class="an-section-kpi" id="an-kpi-run-cardio"></span>
+      </div>
+      <div class="an-section-body" id="an-body-run-cardio">
+        <div class="charts-grid">
+          <div class="chart-card">
+            <div class="chart-card-header"><span class="chart-card-title">HR vs pace</span><span class="chart-card-sub">aerobic efficiency · dot size = distance</span></div>
+            <div class="chart-card-body"><canvas id="hrPaceChart"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-card-header"><span class="chart-card-title">Aerobic efficiency trend</span><span class="chart-card-sub">EF = speed ÷ HR × 100 · 6-run rolling avg</span></div>
+            <div class="chart-card-body"><canvas id="aeroEffChart"></canvas></div>
+          </div>
+          <div class="chart-card chart-full" id="powerCurveCard" style="display:none;">
+            <div class="chart-card-header"><span class="chart-card-title">Running power curve PRs</span><span class="chart-card-sub">best avg watts per duration · all-time records · requires local server</span></div>
+            <div class="chart-card-body"><canvas id="powerCurveChart"></canvas></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Section: Form (collapsed by default) ── -->
+    <div class="an-section">
+      <div class="an-section-header" data-action="toggle-section" data-section-key="run-form">
+        <span class="an-section-chevron">▼</span>
+        <span class="an-section-label">Form</span>
+        <span class="an-section-count">6 charts</span>
+        <span class="an-section-kpi" id="an-kpi-run-form"></span>
+      </div>
+      <div class="an-section-body" id="an-body-run-form">
+        <div class="charts-grid">
+          <div class="chart-card">
+            <div class="chart-card-header"><span class="chart-card-title">Cadence</span><span class="chart-card-sub">spm · target ≥175</span></div>
+            <div class="chart-card-body"><canvas id="cadenceChart"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-card-header"><span class="chart-card-title">Left GCT balance</span><span class="chart-card-sub">% · target 50% · risk below 47.5%</span></div>
+            <div class="chart-card-body"><canvas id="gctChart"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-card-header"><span class="chart-card-title">Ground contact time</span><span class="chart-card-sub">ms · lower = better elastic return · colored by run type</span></div>
+            <div class="chart-card-body"><canvas id="gctMsChart"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-card-header"><span class="chart-card-title">Stride length</span><span class="chart-card-sub">meters per stride · longer = more efficient · 51% coverage</span></div>
+            <div class="chart-card-body"><canvas id="strideLenChart"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-card-header"><span class="chart-card-title">Vertical ratio</span><span class="chart-card-sub">vert osc ÷ stride length · target &lt;8% · 51% coverage</span></div>
+            <div class="chart-card-body"><canvas id="vertRatioChart"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-card-header"><span class="chart-card-title">Vertical oscillation</span><span class="chart-card-sub">cm · colored by run type</span></div>
+            <div class="chart-card-body"><canvas id="voChart"></canvas></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Section: Personal Records ── -->
+    <div class="an-section">
+      <div class="an-section-header" data-action="toggle-section" data-section-key="run-prs">
+        <span class="an-section-chevron">▼</span>
+        <span class="an-section-label">Personal Records</span>
+        <span class="an-section-count">all-time PRs</span>
+        <span class="an-section-kpi" id="an-kpi-run-prs"></span>
+      </div>
+      <div class="an-section-body" id="an-body-run-prs">
+        <div class="table-card" id="bestEffortsRunCard" style="margin:0;">
+          <div id="bestEffortsRun"><div class="no-db-msg">Loading…</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="table-card">
+      <div class="table-header">
+        <span class="chart-card-title">Run log</span>
+        <span class="chart-card-sub">click headers to sort</span>
+        <input type="text" id="runLogSearch" class="log-search" placeholder="Search runs…" oninput="renderTable()">
+      </div>
+      <div class="table-scroll"><table class="runs-table" id="runTable"><thead><tr></tr></thead><tbody id="runTableBody"></tbody></table></div>
+    </div>
+  </div>
+
+  <!-- ── CYCLING PAGE ── -->
+  <div id="analyticsPage-cycling" class="analytics-page" style="display:none;">
+    <div class="stat-strip" id="statStripCyc"></div>
+    <div id="lastRideSnapshot"></div>
+    <!-- ── Section: Pace & Volume ── -->
+    <div class="an-section">
+      <div class="an-section-header" data-action="toggle-section" data-section-key="cyc-pace-volume">
+        <span class="an-section-chevron">▼</span>
+        <span class="an-section-label">Pace &amp; Volume</span>
+        <span class="an-section-count">1 chart</span>
+        <span class="an-section-kpi" id="an-kpi-cyc-pace-volume"></span>
+      </div>
+      <div class="an-section-body" id="an-body-cyc-pace-volume">
+        <div class="charts-grid">
+          <div class="chart-card chart-full">
+            <div class="chart-card-header"><span class="chart-card-title">Cycling speed over time</span><span class="chart-card-sub">mph · virtual / road / indoor</span></div>
+            <div class="chart-card-body"><canvas id="cyclingChart"></canvas></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Section: Power ── -->
+    <div class="an-section">
+      <div class="an-section-header" data-action="toggle-section" data-section-key="cyc-power">
+        <span class="an-section-chevron">▼</span>
+        <span class="an-section-label">Power</span>
+        <span class="an-section-count">5 charts</span>
+        <span class="an-section-kpi" id="an-kpi-cyc-power"></span>
+      </div>
+      <div class="an-section-body" id="an-body-cyc-power">
+        <div class="charts-grid">
+          <div class="chart-card chart-full" id="cyclingLoadCard" style="display:none;">
+            <div class="chart-card-header"><span class="chart-card-title">Cycling training load</span><span class="chart-card-sub">TSS · intensity factor · normalized power · requires local server</span></div>
+            <div class="chart-card-body"><canvas id="cyclingLoadChart"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-card-header"><span class="chart-card-title">Cycling avg power</span><span class="chart-card-sub">watts · road + virtual rides</span></div>
+            <div class="chart-card-body"><canvas id="cyclingPowerChart"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-card-header"><span class="chart-card-title">Power trend</span><span class="chart-card-sub">4-ride rolling avg · avg vs peak power</span></div>
+            <div class="chart-card-body"><canvas id="powerTrendChart"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-card-header"><span class="chart-card-title">Peak power history</span><span class="chart-card-sub">max watts per ride · PR annotated</span></div>
+            <div class="chart-card-body"><canvas id="peakPowerChart"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-card-header"><span class="chart-card-title">Speed vs power</span><span class="chart-card-sub">efficiency scatter · dot size = distance</span></div>
+            <div class="chart-card-body"><canvas id="speedPowerChart"></canvas></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Section: Cardio ── -->
+    <div class="an-section">
+      <div class="an-section-header" data-action="toggle-section" data-section-key="cyc-cardio">
+        <span class="an-section-chevron">▼</span>
+        <span class="an-section-label">Cardio</span>
+        <span class="an-section-count">1 chart</span>
+        <span class="an-section-kpi" id="an-kpi-cyc-cardio"></span>
+      </div>
+      <div class="an-section-body" id="an-body-cyc-cardio">
+        <div class="charts-grid">
+          <div class="chart-card chart-full">
+            <div class="chart-card-header"><span class="chart-card-title">HR zone distribution</span><span class="chart-card-sub">% by avg HR zone · max HR 183 bpm</span></div>
+            <div class="chart-card-body" style="padding-bottom:14px;"><canvas id="hrZoneChartCyc" style="max-height:60px;"></canvas></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Section: Personal Records ── -->
+    <div class="an-section">
+      <div class="an-section-header" data-action="toggle-section" data-section-key="cyc-prs">
+        <span class="an-section-chevron">▼</span>
+        <span class="an-section-label">Personal Records</span>
+        <span class="an-section-count">all-time PRs</span>
+        <span class="an-section-kpi" id="an-kpi-cyc-prs"></span>
+      </div>
+      <div class="an-section-body" id="an-body-cyc-prs">
+        <div class="table-card" id="bestEffortsCycleCard" style="margin:0;">
+          <div id="bestEffortsCycle"><div class="no-db-msg">Loading…</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="table-card">
+      <div class="table-header">
+        <span class="chart-card-title">Ride log</span>
+        <span class="chart-card-sub">click headers to sort</span>
+        <input type="text" id="rideLogSearch" class="log-search" placeholder="Search rides…" oninput="renderCycleTable()">
+      </div>
+      <div class="table-scroll"><table class="runs-table" id="cycleTable"><thead><tr></tr></thead><tbody id="cycleTableBody"></tbody></table></div>
+    </div>
+  </div>
+
+</div>
+
+<script defer src="js/data.js"></script>
+<script defer src="js/plan.js"></script>
+<script defer src="js/analytics.js"></script>
+<script defer src="js/app.js"></script>
+<script defer src="js/db.js"></script>
+
+<!-- Leaflet -->
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script defer src="js/map.js"></script>
+</body>
+</html>
