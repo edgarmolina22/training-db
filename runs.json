@@ -2581,5 +2581,26 @@
     "aerobic_te": 3.7,
     "is_race": false,
     "garmin_id": 22902103753
+  },
+  {
+    "garmin_id": 22936538052,
+    "Date": "2026-05-19 07:05:59",
+    "Title": "W2 - Easy Run - 5mi - Z2",
+    "Distance": 5.02,
+    "Time": "00:47:32",
+    "ActivityType": "Running",
+    "pace_sec": 569,
+    "hr": 146,
+    "max_hr": 153,
+    "cadence": 171,
+    "left_pct": 47.51,
+    "vo": 10.5,
+    "gct": 264,
+    "stride_len": 0.99,
+    "vert_ratio": 10.3,
+    "ascent": "62",
+    "calories": 613,
+    "aerobic_te": 3.4,
+    "is_race": false
   }
 ]
