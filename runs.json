@@ -2644,5 +2644,26 @@
     "calories": 623,
     "aerobic_te": 3.0,
     "is_race": false
+  },
+  {
+    "garmin_id": 22984943554,
+    "Date": "2026-05-23 06:30:24",
+    "Title": "W2 - Long Run - 11mi - Z2",
+    "Distance": 11.02,
+    "Time": "01:44:30",
+    "ActivityType": "Running",
+    "pace_sec": 569,
+    "hr": 145,
+    "max_hr": 166,
+    "cadence": 176,
+    "left_pct": 47.47,
+    "vo": 9.4,
+    "gct": 257,
+    "stride_len": 0.96,
+    "vert_ratio": 9.7,
+    "ascent": "128",
+    "calories": 1298,
+    "aerobic_te": 4.3,
+    "is_race": false
   }
 ]
