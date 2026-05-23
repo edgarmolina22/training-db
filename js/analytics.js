@@ -380,6 +380,42 @@ function buildShareCardHTML(type, style){
     </div>`;
   }
 
+  if(style===7){
+    // ── Corner stamp — transparent overlay, date top-left, distance + time/pace bottom-left ──
+    const dateLine = dateStr.replace(', ', ' · ').toUpperCase();
+    const sub = [time, d.metrics[0]?.v].filter(Boolean).join(' · ').toUpperCase();
+    return `<div style="width:${W}px;height:${H}px;position:relative;background:transparent;color:#fff;">
+      <div style="position:absolute;top:18px;left:18px;font-family:'DM Mono',monospace;font-size:8px;letter-spacing:0.22em;text-shadow:0 1px 6px rgba(0,0,0,0.45);">${dateLine}</div>
+      <div style="position:absolute;bottom:24px;left:20px;">
+        <div style="font-family:'Instrument Serif',serif;font-style:italic;font-size:42px;line-height:0.95;letter-spacing:-0.02em;text-shadow:0 2px 8px rgba(0,0,0,0.55);">${headline}</div>
+        ${sub?`<div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.22em;margin-top:6px;opacity:0.92;text-shadow:0 1px 6px rgba(0,0,0,0.45);">${sub}</div>`:''}
+      </div>
+    </div>`;
+  }
+
+  if(style===8){
+    // ── Hairline — transparent overlay, distance + date above a thin rule, three metrics below ──
+    const dateShort = dateStr.replace(/, \d{4}$/,'').toUpperCase();
+    const paceLabel = (d.metrics[0]?.k||'').replace('AVG ','');
+    const paceVal = d.metrics[0]?.v||'—';
+    const hrLabel = (d.metrics[1]?.k||'').replace('AVG ','');
+    const hrVal = d.metrics[1]?.v||'—';
+    const cell = (label,val) => `<div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.16em;text-shadow:0 1px 6px rgba(0,0,0,0.45);"><span style="opacity:0.65;font-size:7.5px;">${label} </span>${val}</div>`;
+    return `<div style="width:${W}px;height:${H}px;position:relative;background:transparent;color:#fff;">
+      <div style="position:absolute;left:18px;right:18px;bottom:22px;">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;padding-bottom:10px;border-bottom:0.5px solid rgba(255,255,255,0.5);">
+          <div style="font-family:'Instrument Serif',serif;font-style:italic;font-size:40px;line-height:0.9;letter-spacing:-0.02em;text-shadow:0 2px 8px rgba(0,0,0,0.55);">${headline}</div>
+          <div style="font-family:'DM Mono',monospace;font-size:8px;letter-spacing:0.22em;opacity:0.9;text-shadow:0 1px 6px rgba(0,0,0,0.45);">${dateShort}</div>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding-top:10px;">
+          ${time?cell('TIME',time):''}
+          ${paceVal!=='—'?cell(paceLabel,paceVal):''}
+          ${hrVal!=='—'?cell(hrLabel,hrVal):''}
+        </div>
+      </div>
+    </div>`;
+  }
+
   return '';
 }
 
@@ -686,6 +722,81 @@ async function downloadShareCard(){
     ctx.textAlign='right';ctx.fillStyle='rgba(255,255,255,0.35)';
     ctx.fillText('training.edgarmolina.com',W-px,brandY);
   } // end style 6
+
+  if(_shareStyle===7){
+    // Corner stamp — transparent, date top-left, distance + time/pace bottom-left
+    const px=28*scale;
+    const dateLine=dateStr.replace(', ',' · ').toUpperCase();
+    const sub=[time, metrics[0]?.v].filter(Boolean).join(' · ').toUpperCase();
+    ctx.textBaseline='top';
+    ctx.shadowColor='rgba(0,0,0,0.55)';ctx.shadowBlur=6*scale;ctx.shadowOffsetY=1*scale;
+    // Date top-left
+    ctx.fillStyle='#fff';ctx.font=`500 ${8*scale}px 'DM Mono',monospace`;ctx.textAlign='left';
+    ctx.fillText(dateLine, px, 32*scale);
+    // Distance + sub bottom-left
+    ctx.shadowBlur=8*scale;ctx.shadowOffsetY=2*scale;
+    ctx.font=serif(42);ctx.fillText(headline, px, H - 86*scale);
+    if(sub){
+      ctx.shadowBlur=6*scale;ctx.shadowOffsetY=1*scale;
+      ctx.font=`500 ${9*scale}px 'DM Mono',monospace`;
+      ctx.fillText(sub, px, H - 40*scale);
+    }
+    ctx.shadowColor='transparent';ctx.shadowBlur=0;ctx.shadowOffsetY=0;
+  }
+
+  if(_shareStyle===8){
+    // Hairline — transparent, distance + date over a thin rule, 3 metrics below
+    const px=28*scale;
+    const dateShort=dateStr.replace(/, \d{4}$/,'').toUpperCase();
+    const paceLabel=(metrics[0]?.k||'').replace('AVG ','');
+    const paceVal=metrics[0]?.v;
+    const hrLabel=(metrics[1]?.k||'').replace('AVG ','');
+    const hrVal=metrics[1]?.v;
+
+    const blockBottom = H - 32*scale;            // visual bottom of overlay block
+    const lineY      = blockBottom - 28*scale;   // hairline position
+    const headlineBaseline = lineY - 10*scale;   // baseline of headline + date
+    const metricsTop = lineY + 12*scale;         // top of metrics row
+
+    ctx.shadowColor='rgba(0,0,0,0.55)';ctx.shadowBlur=8*scale;ctx.shadowOffsetY=2*scale;
+    // Headline (left), date (right) — both bottom-aligned on headlineBaseline
+    ctx.fillStyle='#fff';ctx.textBaseline='alphabetic';ctx.textAlign='left';
+    ctx.font=serif(40);ctx.fillText(headline, px, headlineBaseline);
+
+    ctx.shadowBlur=6*scale;ctx.shadowOffsetY=1*scale;
+    ctx.font=`500 ${8*scale}px 'DM Mono',monospace`;ctx.textAlign='right';
+    ctx.fillText(dateShort, W-px, headlineBaseline - 4*scale);
+
+    // Hairline rule
+    ctx.shadowColor='transparent';ctx.shadowBlur=0;ctx.shadowOffsetY=0;
+    ctx.strokeStyle='rgba(255,255,255,0.5)';ctx.lineWidth=scale*0.5;
+    ctx.beginPath();ctx.moveTo(px,lineY);ctx.lineTo(W-px,lineY);ctx.stroke();
+
+    // Three metrics: TIME / PACE-or-SPEED / HR
+    ctx.shadowColor='rgba(0,0,0,0.55)';ctx.shadowBlur=6*scale;ctx.shadowOffsetY=1*scale;
+    ctx.textBaseline='top';
+    const cells=[
+      time && {label:'TIME', val:time},
+      paceVal && {label:paceLabel, val:paceVal},
+      hrVal && {label:hrLabel, val:hrVal},
+    ].filter(Boolean);
+    cells.forEach((c,i)=>{
+      // Space-between: first left, last right, middles centered
+      let align, anchorX;
+      if(cells.length===1){ align='left'; anchorX=px; }
+      else if(i===0){ align='left'; anchorX=px; }
+      else if(i===cells.length-1){ align='right'; anchorX=W-px; }
+      else { align='center'; anchorX = px + i*((W-px*2)/(cells.length-1)); }
+      ctx.textAlign=align;
+      // label (small, dim)
+      ctx.fillStyle='rgba(255,255,255,0.65)';ctx.font=`500 ${7.5*scale}px 'DM Mono',monospace`;
+      ctx.fillText(c.label, anchorX, metricsTop);
+      // value
+      ctx.fillStyle='#fff';ctx.font=`500 ${10*scale}px 'DM Mono',monospace`;
+      ctx.fillText(c.val, anchorX, metricsTop + 12*scale);
+    });
+    ctx.shadowColor='transparent';ctx.shadowBlur=0;ctx.shadowOffsetY=0;
+  }
 
   const filename=`emth-${_shareType}-${new Date(r.Date||r.date).toISOString().slice(0,10)}-style${_shareStyle}.png`;
   canvas.toBlob(async blob=>{
