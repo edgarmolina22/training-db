@@ -20,7 +20,7 @@ training-db/
 │   ├── plan.js         — Training plan rendering + plan health
 │   ├── analytics.js    — Analytics + charts + snapshots + share cards
 │   ├── app.js          — Event dispatcher, tab switching, init/bootstrap
-│   ├── db.js           — Local DB integration + activity detail modal
+│   ├── db.js           — Local DB integration + inline activity detail dropdown
 │   └── map.js          — Leaflet map tab
 ├── runs.json           — Activity summaries loaded at page load
 ├── cycles.json         — Cycling summaries loaded at page load
@@ -141,24 +141,23 @@ Each section header shows an at-a-glance KPI summary when collapsed (e.g. "lates
 
 ---
 
-### 🗺 Activity detail modal *(requires local server)*
+### 🗺 Activity detail *(requires local server)*
 
-Click **⊞** on any activity row:
+**Click any activity row** in the run or cycle log to expand an inline detail panel directly beneath it. Only one row is open at a time; click again to collapse.
 
 | Tab | Contents |
 |-----|----------|
 | **Splits** | Per-mile: pace, HR, cadence, GCT, left%, VO, VR, power, calories, ascent, temp |
 | **HR Zones** | Seconds + % in each of 5 zones |
 | **Form Drift** | First vs last mile: HR, GCT, left balance, VO, power |
-| **Map** | Leaflet map with pace heatmap (green=fast → amber=mid → coral=slow) |
 
-Form Drift tab hidden for cycling activities.
+Form Drift tab hidden for cycling activities. The standalone Map view lives in its own top-level tab (Leaflet pace heatmap, green=fast → amber=mid → coral=slow).
 
 ---
 
 ### 📸 Share cards
 
-6 styles, exportable as PNG. Click **↗** on any activity row.
+9 styles, exportable as PNG (1080×1920, 9:16 Instagram Story). Click **↗** on any activity row.
 
 | Style | Description |
 |-------|-------------|
@@ -168,6 +167,11 @@ Form Drift tab hidden for cycling activities.
 | 4 | Top bar + floating card |
 | 5 | Full dark card + GPS route pace heatmap |
 | 6 | Full transparent + GPS route pace heatmap |
+| 7 | Corner stamp — minimal photo overlay (date top, distance bottom) |
+| 8 | Hairline — distance above a single rule, three metrics below |
+| 9 | Side label — rotated tag on the left edge, time + pace bottom-right |
+
+Styles 7–9 are designed as photo overlays — the card is transparent so it composites cleanly onto whatever activity photo you set as the Story background.
 
 - **iOS:** native share sheet → "Save Image" → Photos  
 - **Desktop:** direct PNG download  
