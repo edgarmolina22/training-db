@@ -60,6 +60,10 @@ const CLICK_ACTIONS = {
     el.dataset.distance,
     el.dataset.garminId
   ),
+  // Inline activity-detail dropdown (replaces the floating modal trigger on rows)
+  'toggle-activity-row':    el => toggleActivityRow(el),
+  'set-activity-row-tab':   el => setActivityRowTab(el.dataset.tab, el),
+  'close-activity-row':     () => closeActivityRow(),
   'open-share-modal':     el => {
     const idx = Number(el.dataset.rowIdx);
     const src = el.dataset.source === 'cycle' ? window._cycleTableRows : window._tableRows;

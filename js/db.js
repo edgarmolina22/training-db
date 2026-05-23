@@ -441,15 +441,6 @@ async function renderCyclingLoadFromDB() {
 }
 
 // ── Wire up activity modal to table rows ─────────────────────────────
-// Override the existing share button column to add an "expand" button
-const _origRenderTable = window.renderTable;
-window.renderTable = function() {
-  if (_origRenderTable) _origRenderTable();
-  // Add ↗ detail buttons wired to openActModal
-  // (table rows already re-render via existing renderTable — 
-  //  the ↗ share buttons call openShareModal; we add a separate ⊞ button)
-};
-
 // Called from table row ↗ button — already exists.
 // We extend openShareModal to also store the activity for the modal.
 const _origOpenShare = window.openShareModal;
@@ -457,10 +448,144 @@ window.openShareModal = function(type, activity) {
   if (_origOpenShare) _origOpenShare(type, activity);
 };
 
-// New function for the detail modal button (added to each table row)
+// Legacy modal entry — kept for any callers that still want the floating modal.
 window.openActivityDetail = function(date, title, actType, dist, garminId) {
   openActModal(date, title, actType, dist, garminId);
 };
+
+// ── Inline activity-detail dropdown (row-click expansion) ────────────
+// Replaces the per-row ⊞ button. Clicking any activity row inserts a
+// detail <tr> immediately below it with Splits / HR zones / Form drift
+// tabs — same data the floating modal renders, just inline.
+let _openActivityRow    = null;  // the inserted detail <tr>
+let _openActivitySource = null;  // the activity <tr> that was clicked
+let _activityRowTab     = 'splits';
+let _activityRowData    = {};
+
+function toggleActivityRow(tr) {
+  // Toggle off if clicking the row that's already open
+  if (_openActivitySource === tr) {
+    closeActivityRow();
+    return;
+  }
+  if (_openActivityRow) closeActivityRow();
+
+  const date      = tr.dataset.date || '';
+  const title     = tr.dataset.title || '';
+  const actType   = tr.dataset.type || '';
+  const dist      = tr.dataset.distance || '';
+  const garminId  = tr.dataset.garminId || '';
+  const isRun     = actType === 'Running' || actType === 'run';
+
+  _activityRowData = { date, title, actType, dist, garminId };
+  _activityRowTab  = 'splits';
+
+  const colspan = tr.children.length;
+  const detail = document.createElement('tr');
+  detail.className = 'activity-detail-row';
+  detail.innerHTML = `<td colspan="${colspan}">
+    <div class="activity-detail-wrap">
+      <div class="activity-detail-head">
+        <div class="activity-detail-title">${title || '—'}<span class="activity-detail-date">${date || ''}</span></div>
+        <button class="activity-detail-close" data-action="close-activity-row" aria-label="Close">×</button>
+      </div>
+      <div class="activity-detail-tabs">
+        <button class="activity-detail-tab active" data-action="set-activity-row-tab" data-tab="splits">Splits</button>
+        <button class="activity-detail-tab" data-action="set-activity-row-tab" data-tab="zones">HR zones</button>
+        ${isRun ? '<button class="activity-detail-tab" data-action="set-activity-row-tab" data-tab="drift">Form drift</button>' : ''}
+      </div>
+      <div class="activity-detail-body"><div class="no-db-msg">Loading…</div></div>
+    </div>
+  </td>`;
+
+  tr.after(detail);
+  _openActivityRow    = detail;
+  _openActivitySource = tr;
+  tr.classList.add('activity-detail-open');
+
+  loadActivityRowTab('splits');
+}
+
+function closeActivityRow() {
+  if (_openActivityRow) {
+    _openActivityRow.remove();
+    _openActivityRow = null;
+  }
+  if (_openActivitySource) {
+    _openActivitySource.classList.remove('activity-detail-open');
+    _openActivitySource = null;
+  }
+}
+
+function setActivityRowTab(tab, btn) {
+  if (!_openActivityRow) return;
+  _activityRowTab = tab;
+  _openActivityRow.querySelectorAll('.activity-detail-tab').forEach(t => t.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  loadActivityRowTab(tab);
+}
+
+async function loadActivityRowTab(tab) {
+  const body = _openActivityRow?.querySelector('.activity-detail-body');
+  if (!body) return;
+  if (!_dbConnected) {
+    body.innerHTML = `<div class="no-db-msg">
+      <div style="margin-bottom:6px">🔌 Local server not running</div>
+      <div style="font-size:10px">Start it with: <code style="background:var(--surface2);padding:2px 6px;border-radius:3px;">python serve.py</code></div>
+    </div>`;
+    return;
+  }
+  body.innerHTML = '<div class="no-db-msg">Loading…</div>';
+  const { date, title, actType, dist, garminId } = _activityRowData;
+
+  const idParams = (extra = {}) => {
+    const p = new URLSearchParams();
+    if (garminId) p.set('garmin_id', garminId);
+    else {
+      if (date) p.set('date', date);
+      if (actType) p.set('type', actType);
+    }
+    for (const [k, v] of Object.entries(extra)) {
+      if (v !== undefined && v !== '') p.set(k, v);
+    }
+    return p;
+  };
+
+  try {
+    if (tab === 'splits') {
+      const params = idParams({ title: (title||'').slice(0,30), dist: dist || '' });
+      const r = await fetch(`${DB_BASE}/api/laps?${params}`);
+      const d = await r.json();
+      if (d.not_imported) {
+        body.innerHTML = `<div class="no-db-msg">
+          <div style="margin-bottom:6px">Activity not in database yet</div>
+          <div style="font-size:10px;color:var(--text3);margin-top:4px">${d.message}</div>
+        </div>`;
+        return;
+      }
+      body.innerHTML = renderSplitsTab(d.laps || [], actType);
+    } else if (tab === 'zones') {
+      const r = await fetch(`${DB_BASE}/api/hr_zones?${idParams()}`);
+      const d = await r.json();
+      const list = d.zones || [];
+      const zones = list.find(z => z.title === title)
+        || list.slice().sort((a,b) => (b.total_sec||0) - (a.total_sec||0))[0];
+      body.innerHTML = renderZonesTab(zones);
+    } else if (tab === 'drift') {
+      const isRun = actType === 'Running' || actType === 'run';
+      if (!isRun) {
+        body.innerHTML = '<div class="no-db-msg">Form drift is only available for running activities.</div>';
+        return;
+      }
+      const r = await fetch(`${DB_BASE}/api/form_drift?${idParams()}`);
+      const d = await r.json();
+      const drift = (d.drift || []).find(z => z.title === title) || d.drift?.[0];
+      body.innerHTML = renderDriftTab(drift);
+    }
+  } catch(e) {
+    body.innerHTML = `<div class="no-db-msg">Error: ${e.message}</div>`;
+  }
+}
 
 // ── Best Efforts card ────────────────────────────────────────────────
 // Pretty labels + value formatters keyed by effort_type. Anything not in this

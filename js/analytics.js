@@ -416,6 +416,22 @@ function buildShareCardHTML(type, style){
     </div>`;
   }
 
+  if(style===9){
+    // ── Side label — transparent overlay, rotated tag on left edge, time + pace bottom-right ──
+    const dateShort = dateStr.replace(', ',' ').toUpperCase();
+    const tagParts = [d.title && d.title.toUpperCase(), d.dist && d.dist.toUpperCase(), dateShort].filter(Boolean);
+    const tagLine = tagParts.join(' · ');
+    const hero = time || headline;
+    const sub = d.metrics[0]?.v || '';
+    return `<div style="width:${W}px;height:${H}px;position:relative;background:transparent;color:#fff;">
+      <div style="position:absolute;left:18px;top:50%;transform:translateY(-50%) rotate(-90deg);transform-origin:left center;font-family:'DM Mono',monospace;font-size:8px;letter-spacing:0.32em;white-space:nowrap;opacity:0.92;text-shadow:0 1px 6px rgba(0,0,0,0.45);">${tagLine}</div>
+      <div style="position:absolute;right:20px;bottom:24px;text-align:right;">
+        <div style="font-family:'Instrument Serif',serif;font-style:italic;font-size:38px;line-height:0.95;letter-spacing:-0.02em;text-shadow:0 2px 8px rgba(0,0,0,0.55);">${hero}</div>
+        ${sub?`<div style="font-family:'DM Mono',monospace;font-size:8.5px;letter-spacing:0.22em;margin-top:6px;opacity:0.9;text-shadow:0 1px 6px rgba(0,0,0,0.45);">${sub.toUpperCase()}</div>`:''}
+      </div>
+    </div>`;
+  }
+
   return '';
 }
 
@@ -439,7 +455,7 @@ function closeShareModal(){
 async function downloadShareCard(){
   const d = getShareData(_shareType);
   if(!d) return;
-  const { r, isRun, emoji, typeLabel, dateStr, headline, headlineLabel, time, metrics } = d;
+  const { r, isRun, emoji, typeLabel, dateStr, headline, headlineLabel, time, metrics, title, dist } = d;
 
   const scale=3, W=360*scale, H=640*scale;
   const canvas=document.createElement('canvas');
@@ -795,6 +811,42 @@ async function downloadShareCard(){
       ctx.fillStyle='#fff';ctx.font=`500 ${10*scale}px 'DM Mono',monospace`;
       ctx.fillText(c.val, anchorX, metricsTop + 12*scale);
     });
+    ctx.shadowColor='transparent';ctx.shadowBlur=0;ctx.shadowOffsetY=0;
+  }
+
+  if(_shareStyle===9){
+    // Side label — transparent, rotated tag on left edge, time + pace bottom-right
+    const px=28*scale;
+    const dateShort=dateStr.replace(', ',' ').toUpperCase();
+    const tagParts=[title && title.toUpperCase(), dist && dist.toUpperCase(), dateShort].filter(Boolean);
+    const tagLine=tagParts.join(' · ');
+    const hero=time||headline;
+    const sub=(metrics[0]?.v||'').toUpperCase();
+
+    // Rotated tag on left edge — translate to left margin + vertical center, rotate -90°
+    ctx.save();
+    ctx.translate(px-2*scale, H/2);
+    ctx.rotate(-Math.PI/2);
+    ctx.shadowColor='rgba(0,0,0,0.45)';ctx.shadowBlur=6*scale;ctx.shadowOffsetY=1*scale;
+    ctx.fillStyle='rgba(255,255,255,0.92)';
+    ctx.font=`500 ${8*scale}px 'DM Mono',monospace`;
+    ctx.textAlign='center';ctx.textBaseline='middle';
+    // Letter-spacing is not directly supported on canvas; emulate by manually spacing.
+    const spaced = tagLine.split('').join(' '); // thin space approximation
+    ctx.fillText(spaced, 0, 0);
+    ctx.restore();
+
+    // Hero (time/headline) + sub (pace) bottom-right
+    ctx.shadowColor='rgba(0,0,0,0.55)';ctx.shadowBlur=8*scale;ctx.shadowOffsetY=2*scale;
+    ctx.fillStyle='#fff';ctx.textAlign='right';ctx.textBaseline='alphabetic';
+    ctx.font=serif(38);
+    ctx.fillText(hero, W-px, H-58*scale);
+    if(sub){
+      ctx.shadowBlur=6*scale;ctx.shadowOffsetY=1*scale;
+      ctx.fillStyle='rgba(255,255,255,0.9)';
+      ctx.font=`500 ${8.5*scale}px 'DM Mono',monospace`;
+      ctx.fillText(sub, W-px, H-38*scale);
+    }
     ctx.shadowColor='transparent';ctx.shadowBlur=0;ctx.shadowOffsetY=0;
   }
 
@@ -1501,10 +1553,11 @@ function renderTable(){
     const rowStyle = isRace ? ' style="background:#faf5fc;border-left:2px solid var(--race);"'
                    : isFlare ? ' style="background:#fdf0ee;"' : '';
     const shareType = isRun ? 'run' : 'ride';
-    const shareBtn = `<td><button data-action="open-share-modal" data-share-type="${shareType}" data-source="run" data-row-idx="${idx}" class="row-action-btn">↗</button> <button data-action="open-activity-detail" data-garmin-id="${r.garmin_id||''}" data-date="${(r.Date||r.date||'').slice(0,10)}" data-title="${(r.Title||'').replace(/"/g,'&quot;')}" data-type="${isRun?'Running':'Cycling'}" data-distance="${r.Distance||0}" class="row-action-btn" title="View splits & zones">⊞</button></td>`;
+    const shareBtn = `<td><button data-action="open-share-modal" data-share-type="${shareType}" data-source="run" data-row-idx="${idx}" class="row-action-btn">↗</button></td>`;
+    const rowAttrs = ` data-action="toggle-activity-row" data-garmin-id="${r.garmin_id||''}" data-date="${(r.Date||r.date||'').slice(0,10)}" data-title="${(r.Title||'').replace(/"/g,'&quot;')}" data-type="${isRun?'Running':'Cycling'}" data-distance="${r.Distance||0}"`;
 
     if(isCycleView){
-      return `<tr${rowStyle}>
+      return `<tr${rowStyle}${rowAttrs}>
         <td>${fmtDate(r.Date||r.date)}</td>
         <td class="run-title-cell">${r.Title||'—'}${raceBadge}</td>
         <td>${typeTag}</td>
@@ -1519,7 +1572,7 @@ function renderTable(){
         ${shareBtn}
       </tr>`;
     } else if(isRunView){
-      return `<tr${rowStyle}>
+      return `<tr${rowStyle}${rowAttrs}>
         <td>${fmtDate(r.Date||r.date)}</td>
         <td class="run-title-cell">${r.Title||'—'}${raceBadge}${isFlare?' ⚠':''}</td>
         <td>${(r.Distance||0).toFixed(2)}</td>
@@ -1536,7 +1589,7 @@ function renderTable(){
     } else {
       const paceSpeed = isRun&&r.pace_sec ? secToMin(r.pace_sec)+'/mi' : isCycle&&r.avg_speed>0 ? r.avg_speed+' mph' : '—';
       const col8 = isCycle&&r.avg_power ? r.avg_power+'w' : r.left_pct ? `<span class="${gctClass}">${r.left_pct.toFixed(1)}%</span>` : '—';
-      return `<tr${rowStyle}>
+      return `<tr${rowStyle}${rowAttrs}>
         <td>${fmtDate(r.Date||r.date)}</td>
         <td class="run-title-cell">${r.Title||'—'}${raceBadge}${isFlare?' ⚠':''}</td>
         <td>${typeTag}</td>
@@ -2631,8 +2684,9 @@ function renderCycleTable(){
   const typeColorCyc=r=>{const t=r.ActivityType||'';if(t==='Road Cycling')return'#1A4D7A';if(t==='Indoor Cycling')return'#4D8EC4';return'#2C6FAC';};
   tbody.innerHTML=sorted.map((r,idx)=>{
     const typeTag=`<span class="type-tag" style="background:${typeColorCyc(r)}22;color:${typeColorCyc(r)}">${(r.ActivityType||'').replace(' Cycling','')}</span>`;
-    const shareBtn=`<td><button data-action="open-share-modal" data-share-type="ride" data-source="cycle" data-row-idx="${idx}" class="row-action-btn">↗</button> <button data-action="open-activity-detail" data-garmin-id="${r.garmin_id||''}" data-date="${(r.Date||r.date||'').slice(0,10)}" data-title="${(r.Title||'').replace(/"/g,'&quot;')}" data-type="Cycling" data-distance="${r.Distance||0}" class="row-action-btn" title="View splits & zones">⊞</button></td>`;
-    return`<tr>
+    const shareBtn=`<td><button data-action="open-share-modal" data-share-type="ride" data-source="cycle" data-row-idx="${idx}" class="row-action-btn">↗</button></td>`;
+    const rowAttrs=` data-action="toggle-activity-row" data-garmin-id="${r.garmin_id||''}" data-date="${(r.Date||r.date||'').slice(0,10)}" data-title="${(r.Title||'').replace(/"/g,'&quot;')}" data-type="Cycling" data-distance="${r.Distance||0}"`;
+    return`<tr${rowAttrs}>
       <td>${fmtDate(r.Date||r.date)}</td>
       <td class="run-title-cell">${(r.Title||'—').replace(/Zwift - /,'').replace(/Oakley |Newark /,'')}</td>
       <td>${typeTag}</td>
