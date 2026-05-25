@@ -720,5 +720,24 @@
     "calories": 1152,
     "aerobic_te": 3.1,
     "is_race": false
+  },
+  {
+    "garmin_id": 23009733153,
+    "Date": "2026-05-25 06:31:00",
+    "Title": "Cycling 2026-05-25",
+    "Distance": 50.32,
+    "Time": "03:10:04",
+    "ActivityType": "Road Cycling",
+    "avg_speed": 15.9,
+    "max_speed": 43.3,
+    "hr": 134,
+    "max_hr": 162,
+    "cadence": 84,
+    "avg_power": 135,
+    "max_power": 683,
+    "ascent": "1640",
+    "calories": 1805,
+    "aerobic_te": 4.0,
+    "is_race": false
   }
 ]
