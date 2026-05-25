@@ -432,6 +432,77 @@ function buildShareCardHTML(type, style){
     </div>`;
   }
 
+  // ── Shared helpers for styles 10–12 ──
+  const _dow10 = parseLocalDate(d.r.Date||d.r.date).toLocaleDateString('en',{weekday:'short'}).toUpperCase();
+  const _dayStr10 = `${_dow10} · ${d.dateStr.toUpperCase()}`;
+  const [_dv10, _du10] = (d.dist||'').split(' ');
+  const _secs10 = d.metrics.slice(0,3);
+  const _scell = (m) => `<div style="text-align:center;">
+    <div style="font-family:'DM Mono',monospace;font-size:5.5px;letter-spacing:0.18em;color:rgba(255,255,255,0.32);text-shadow:0 1px 6px rgba(0,0,0,0.45);margin-bottom:2px;">${m.k.replace('AVG ','')}</div>
+    <div style="font-family:'Instrument Serif',serif;font-style:italic;font-size:14px;color:#fff;line-height:1;text-shadow:0 1px 8px rgba(0,0,0,0.4);">${m.v}</div>
+  </div>`;
+
+  if(style===10){
+    // ── Dist hero — transparent overlay, distance centred ──
+    const secsHTML = _secs10.map(_scell).join(`<div style="width:0.5px;background:rgba(255,255,255,0.15);align-self:stretch;margin:0 2px;"></div>`);
+    return `<div style="width:${W}px;height:${H}px;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:20px 14px 18px;background:transparent;color:#fff;">
+      <div style="font-family:'DM Mono',monospace;font-size:7px;letter-spacing:0.2em;color:rgba(255,255,255,0.38);text-shadow:0 1px 8px rgba(0,0,0,0.4);">${_dayStr10}</div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:0;">
+        <div style="font-family:'DM Mono',monospace;font-size:6px;letter-spacing:0.22em;color:rgba(255,255,255,0.35);margin-bottom:4px;text-shadow:0 1px 6px rgba(0,0,0,0.4);">DISTANCE</div>
+        <div style="display:flex;align-items:baseline;gap:5px;">
+          <span style="font-family:'Instrument Serif',serif;font-style:italic;font-size:64px;color:#fff;line-height:0.9;text-shadow:0 2px 16px rgba(0,0,0,0.35);">${_dv10}</span>
+          <span style="font-family:'DM Mono',monospace;font-size:12px;color:rgba(255,255,255,0.38);text-shadow:0 1px 8px rgba(0,0,0,0.4);">${_du10||''}</span>
+        </div>
+        <div style="width:22px;height:0.5px;background:rgba(255,255,255,0.2);margin:12px 0 12px;"></div>
+        <div style="display:flex;align-items:flex-start;gap:0;">${secsHTML}</div>
+      </div>
+      <div style="opacity:0;font-size:1px;">·</div>
+    </div>`;
+  }
+
+  if(style===11){
+    // ── Dist strip — transparent overlay, dist top-left, dark bar bottom ──
+    const secsHTML = _secs10.map((m,i) => `
+      ${i>0?'<div style="width:0.5px;background:rgba(255,255,255,0.14);align-self:stretch;margin:0;"></div>':''}
+      <div style="flex:1;text-align:center;padding:0 4px;">
+        <div style="font-family:'DM Mono',monospace;font-size:5.5px;letter-spacing:0.16em;color:rgba(255,255,255,0.36);margin-bottom:3px;">${m.k.replace('AVG ','')}</div>
+        <div style="font-family:'Instrument Serif',serif;font-style:italic;font-size:18px;color:#fff;line-height:1;">${m.v}</div>
+      </div>`).join('');
+    return `<div style="width:${W}px;height:${H}px;position:relative;display:flex;flex-direction:column;justify-content:space-between;background:transparent;color:#fff;">
+      <div style="padding:18px 16px 0;">
+        <div style="font-family:'DM Mono',monospace;font-size:6.5px;letter-spacing:0.2em;color:rgba(255,255,255,0.38);text-shadow:0 1px 8px rgba(0,0,0,0.4);margin-bottom:8px;">${_dayStr10}</div>
+        <div style="font-family:'DM Mono',monospace;font-size:6px;letter-spacing:0.2em;color:rgba(255,255,255,0.35);margin-bottom:4px;text-shadow:0 1px 6px rgba(0,0,0,0.4);">DISTANCE</div>
+        <div style="display:flex;align-items:baseline;gap:5px;">
+          <span style="font-family:'Instrument Serif',serif;font-style:italic;font-size:56px;color:#fff;line-height:0.9;text-shadow:0 2px 20px rgba(0,0,0,0.35);">${_dv10}</span>
+          <span style="font-family:'DM Mono',monospace;font-size:14px;color:rgba(255,255,255,0.36);text-shadow:0 1px 8px rgba(0,0,0,0.4);">${_du10||''}</span>
+        </div>
+      </div>
+      <div style="background:rgba(0,0,0,0.64);border-top:0.5px solid rgba(255,255,255,0.1);padding:12px 10px 16px;display:flex;align-items:center;">${secsHTML}</div>
+    </div>`;
+  }
+
+  if(style===12){
+    // ── Dist list — transparent overlay, editorial label-left/number-right rows ──
+    const secsHTML = _secs10.map(m => `
+      <div style="display:flex;justify-content:space-between;align-items:baseline;border-top:0.5px solid rgba(255,255,255,0.12);padding:9px 0 0;">
+        <span style="font-family:'DM Mono',monospace;font-size:6px;letter-spacing:0.16em;color:rgba(255,255,255,0.34);text-shadow:0 1px 6px rgba(0,0,0,0.4);">${m.k.replace('AVG ','')}</span>
+        <div style="display:flex;align-items:baseline;gap:3px;">
+          <span style="font-family:'Instrument Serif',serif;font-style:italic;font-size:22px;color:#fff;line-height:1;text-shadow:0 1px 10px rgba(0,0,0,0.4);">${m.v}</span>
+        </div>
+      </div>`).join('');
+    return `<div style="width:${W}px;height:${H}px;position:relative;display:flex;flex-direction:column;justify-content:flex-end;padding:0 16px 20px;background:transparent;color:#fff;">
+      <div style="font-family:'DM Mono',monospace;font-size:6.5px;letter-spacing:0.2em;color:rgba(255,255,255,0.36);text-shadow:0 1px 8px rgba(0,0,0,0.4);margin-bottom:16px;">${_dayStr10}</div>
+      <div style="display:flex;justify-content:space-between;align-items:baseline;border-top:0.5px solid rgba(255,255,255,0.18);padding:10px 0 10px;">
+        <span style="font-family:'DM Mono',monospace;font-size:7px;letter-spacing:0.18em;color:rgba(255,255,255,0.34);text-shadow:0 1px 6px rgba(0,0,0,0.4);">DISTANCE</span>
+        <div style="display:flex;align-items:baseline;gap:4px;">
+          <span style="font-family:'Instrument Serif',serif;font-style:italic;font-size:42px;color:#fff;line-height:0.9;text-shadow:0 2px 14px rgba(0,0,0,0.4);">${_dv10}</span>
+          <span style="font-family:'DM Mono',monospace;font-size:10px;color:rgba(255,255,255,0.32);text-shadow:0 1px 6px rgba(0,0,0,0.4);">${_du10||''}</span>
+        </div>
+      </div>
+      ${secsHTML}
+    </div>`;
+  }
+
   return '';
 }
 
@@ -848,6 +919,140 @@ async function downloadShareCard(){
       ctx.fillText(sub, W-px, H-38*scale);
     }
     ctx.shadowColor='transparent';ctx.shadowBlur=0;ctx.shadowOffsetY=0;
+  }
+
+  if(_shareStyle===10){
+    // Dist hero — transparent, distance centred, secondary stats below a thin rule
+    const dow=parseLocalDate(r.Date||r.date).toLocaleDateString('en',{weekday:'short'}).toUpperCase();
+    const dayLabel=`${dow} · ${dateStr.toUpperCase()}`;
+    const [dv,du]=(dist||'').split(' ');
+    const secs=metrics.slice(0,3);
+    ctx.textBaseline='top';
+    // Date
+    ctx.textAlign='center';
+    ctx.fillStyle='rgba(255,255,255,0.38)';
+    ctx.font=`${6*scale}px 'DM Mono',monospace`;
+    ctx.shadowColor='rgba(0,0,0,0.45)';ctx.shadowBlur=10*scale;
+    ctx.fillText(dayLabel,W/2,52*scale);
+    // DISTANCE label
+    ctx.fillStyle='rgba(255,255,255,0.35)';
+    ctx.font=`${6*scale}px 'DM Mono',monospace`;
+    ctx.fillText('DISTANCE',W/2,H/2-108*scale);
+    // Big number
+    ctx.fillStyle='#fff';
+    ctx.font=`italic ${78*scale}px 'Instrument Serif',serif`;
+    ctx.shadowBlur=22*scale;
+    ctx.fillText(dv,W/2,H/2-98*scale);
+    // Unit
+    ctx.fillStyle='rgba(255,255,255,0.35)';
+    ctx.font=`${11*scale}px 'DM Mono',monospace`;
+    ctx.shadowBlur=8*scale;
+    ctx.fillText((du||'').toUpperCase(),W/2,H/2+4*scale);
+    ctx.shadowBlur=0;
+    // Divider
+    ctx.strokeStyle='rgba(255,255,255,0.2)';ctx.lineWidth=0.5*scale;
+    ctx.beginPath();ctx.moveTo(W/2-22*scale,H/2+24*scale);ctx.lineTo(W/2+22*scale,H/2+24*scale);ctx.stroke();
+    // Secondary stats
+    const secY=H/2+40*scale;
+    const gap=130*scale;
+    const secStartX=W/2-((secs.length-1)*gap)/2;
+    secs.forEach((m,i)=>{
+      const sx=secStartX+i*gap;
+      ctx.fillStyle='rgba(255,255,255,0.3)';ctx.font=`${5.5*scale}px 'DM Mono',monospace`;ctx.textAlign='center';
+      ctx.shadowColor='rgba(0,0,0,0.45)';ctx.shadowBlur=6*scale;
+      ctx.fillText(m.k.replace('AVG ',''),sx,secY);
+      ctx.fillStyle='#fff';ctx.font=`italic ${16*scale}px 'Instrument Serif',serif`;ctx.shadowBlur=8*scale;
+      ctx.fillText(m.v,sx,secY+14*scale);
+    });
+    ctx.shadowColor='transparent';ctx.shadowBlur=0;
+  }
+
+  if(_shareStyle===11){
+    // Dist strip — transparent, dist top-left, dark bar bottom
+    const dow=parseLocalDate(r.Date||r.date).toLocaleDateString('en',{weekday:'short'}).toUpperCase();
+    const [dv,du]=(dist||'').split(' ');
+    const secs=metrics.slice(0,3);
+    const px=28*scale;
+    ctx.textBaseline='top';
+    ctx.shadowColor='rgba(0,0,0,0.45)';ctx.shadowBlur=10*scale;
+    // Date
+    ctx.fillStyle='rgba(255,255,255,0.4)';ctx.font=`${6*scale}px 'DM Mono',monospace`;ctx.textAlign='left';
+    ctx.fillText(`${dow} · ${dateStr.toUpperCase()}`,px,52*scale);
+    // DISTANCE label
+    ctx.fillStyle='rgba(255,255,255,0.35)';ctx.font=`${6*scale}px 'DM Mono',monospace`;
+    ctx.fillText('DISTANCE',px,82*scale);
+    // Big number
+    ctx.fillStyle='#fff';ctx.font=`italic ${80*scale}px 'Instrument Serif',serif`;ctx.shadowBlur=22*scale;
+    ctx.fillText(dv,px,98*scale);
+    // Unit — baseline-aligned to number
+    ctx.fillStyle='rgba(255,255,255,0.36)';ctx.font=`${16*scale}px 'DM Mono',monospace`;ctx.shadowBlur=8*scale;
+    const numW=ctx.measureText(dv).width;
+    ctx.fillText((du||'').toUpperCase(),px+numW+10*scale,158*scale);
+    ctx.shadowBlur=0;
+    // Bottom strip
+    const SH=125*scale,SY=H-SH;
+    ctx.fillStyle='rgba(0,0,0,0.62)';ctx.fillRect(0,SY,W,SH);
+    ctx.strokeStyle='rgba(255,255,255,0.1)';ctx.lineWidth=0.5*scale;
+    ctx.beginPath();ctx.moveTo(0,SY);ctx.lineTo(W,SY);ctx.stroke();
+    // Stats inside strip
+    if(secs.length){
+      const colW=W/secs.length;
+      secs.forEach((m,i)=>{
+        const sx=colW*i+colW/2;
+        if(i>0){
+          ctx.strokeStyle='rgba(255,255,255,0.14)';ctx.lineWidth=0.5*scale;
+          ctx.beginPath();ctx.moveTo(colW*i,SY+20*scale);ctx.lineTo(colW*i,SY+SH-20*scale);ctx.stroke();
+        }
+        ctx.fillStyle='rgba(255,255,255,0.36)';ctx.font=`${6*scale}px 'DM Mono',monospace`;ctx.textAlign='center';
+        ctx.shadowColor='rgba(0,0,0,0.3)';ctx.shadowBlur=4*scale;
+        ctx.fillText(m.k.replace('AVG ',''),sx,SY+22*scale);
+        ctx.fillStyle='#fff';ctx.font=`italic ${22*scale}px 'Instrument Serif',serif`;ctx.shadowBlur=8*scale;
+        ctx.fillText(m.v,sx,SY+38*scale);
+      });
+    }
+    ctx.shadowColor='transparent';ctx.shadowBlur=0;
+  }
+
+  if(_shareStyle===12){
+    // Dist list — transparent, editorial label-left / number-right rows
+    const dow=parseLocalDate(r.Date||r.date).toLocaleDateString('en',{weekday:'short'}).toUpperCase();
+    const [dv,du]=(dist||'').split(' ');
+    const secs=metrics.slice(0,3);
+    const px=30*scale;
+    ctx.shadowColor='rgba(0,0,0,0.45)';ctx.shadowBlur=8*scale;
+    // Work from the bottom up
+    const rowH=50*scale;
+    const ruleAlpha='rgba(255,255,255,0.13)';
+    const baseY=H-60*scale; // bottom of last row
+    // Secondary rows (bottom-most first)
+    [...secs].reverse().forEach((m,i)=>{
+      const ry=baseY-(i*rowH);
+      ctx.strokeStyle=ruleAlpha;ctx.lineWidth=0.5*scale;
+      ctx.beginPath();ctx.moveTo(px,ry);ctx.lineTo(W-px,ry);ctx.stroke();
+      // Label left
+      ctx.fillStyle='rgba(255,255,255,0.34)';ctx.font=`${6*scale}px 'DM Mono',monospace`;ctx.textAlign='left';ctx.textBaseline='top';
+      ctx.fillText(m.k.replace('AVG ',''),px,ry+12*scale);
+      // Value right
+      ctx.fillStyle='#fff';ctx.font=`italic ${22*scale}px 'Instrument Serif',serif`;ctx.textAlign='right';ctx.shadowBlur=10*scale;
+      ctx.fillText(m.v,W-px,ry+6*scale);
+    });
+    // Distance row (above secondary)
+    const distRuleY=baseY-secs.length*rowH-12*scale;
+    ctx.strokeStyle='rgba(255,255,255,0.18)';ctx.lineWidth=0.5*scale;
+    ctx.beginPath();ctx.moveTo(px,distRuleY);ctx.lineTo(W-px,distRuleY);ctx.stroke();
+    // DISTANCE label
+    ctx.fillStyle='rgba(255,255,255,0.34)';ctx.font=`${7*scale}px 'DM Mono',monospace`;ctx.textAlign='left';ctx.textBaseline='top';ctx.shadowBlur=6*scale;
+    ctx.fillText('DISTANCE',px,distRuleY+14*scale);
+    // Big number right
+    ctx.fillStyle='#fff';ctx.font=`italic ${54*scale}px 'Instrument Serif',serif`;ctx.textAlign='right';ctx.shadowBlur=20*scale;
+    ctx.fillText(dv,W-px,distRuleY+4*scale);
+    // Unit
+    ctx.fillStyle='rgba(255,255,255,0.32)';ctx.font=`${11*scale}px 'DM Mono',monospace`;ctx.textAlign='right';ctx.shadowBlur=6*scale;
+    ctx.fillText((du||'').toUpperCase(),W-px,distRuleY+62*scale);
+    // Date
+    ctx.fillStyle='rgba(255,255,255,0.38)';ctx.font=`${6*scale}px 'DM Mono',monospace`;ctx.textAlign='left';ctx.textBaseline='top';
+    ctx.fillText(`${dow} · ${dateStr.toUpperCase()}`,px,distRuleY-28*scale);
+    ctx.shadowColor='transparent';ctx.shadowBlur=0;
   }
 
   const filename=`emth-${_shareType}-${new Date(r.Date||r.date).toISOString().slice(0,10)}-style${_shareStyle}.png`;
