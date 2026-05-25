@@ -214,53 +214,26 @@ const BRAND_HTML = '<div style="display:flex;justify-content:space-between;align
   + '<span style="font-size:6px;letter-spacing:0.06em;color:rgba(255,255,255,0.18);">training.edgarmolina.com</span>'
   + '</div>';
 
-function _getMaxStats(type){
-  const isRun = type === 'run';
-  const items = (isRun ? analyticsRuns : analyticsCycles).filter(r => (r.Distance||0) > 0);
-  if(!items.length) return null;
-  const maxDist = Math.max(...items.map(r => r.Distance||0));
+function _getActivityMaxStats(r, isRun){
+  if(!r) return null;
   if(!isRun){
-    const maxSpd  = Math.max(...items.map(r => r.max_speed||0));
-    const maxPwr  = Math.max(...items.map(r => r.max_power||0));
-    const maxElev = Math.max(...items.map(r => parseInt(r.ascent||0)));
     return [
-      { k:'MAX DISTANCE', v: maxDist.toFixed(2)+' mi' },
-      { k:'MAX SPEED',    v: maxSpd.toFixed(1)+' mph' },
-      { k:'MAX POWER',    v: maxPwr+' W' },
-      { k:'MAX ELEVATION',v: maxElev.toLocaleString()+' ft' },
+      { k:'DISTANCE',    v: r.Distance ? r.Distance.toFixed(2)+' mi' : '—' },
+      { k:'MAX SPEED',   v: r.max_speed ? r.max_speed.toFixed(1)+' mph' : '—' },
+      { k:'MAX POWER',   v: r.max_power ? r.max_power+' W' : '—' },
+      { k:'ELEVATION',   v: r.ascent && parseInt(r.ascent)>0 ? parseInt(r.ascent).toLocaleString()+' ft' : '—' },
     ];
   } else {
-    const paces      = items.filter(r=>(r.pace_sec||0)>0).map(r=>r.pace_sec);
-    const bestPace   = paces.length ? Math.min(...paces) : 0;
-    const maxElev    = Math.max(...items.map(r => parseInt(r.ascent||0)));
-    const maxCadence = Math.max(...items.map(r => r.cadence||0));
     return [
-      { k:'MAX DISTANCE', v: maxDist.toFixed(2)+' mi' },
-      { k:'BEST PACE',    v: bestPace ? secToMin(bestPace)+'/mi' : '—' },
-      { k:'MAX ELEVATION',v: maxElev.toLocaleString()+' ft' },
-      { k:'MAX CADENCE',  v: maxCadence+' spm' },
+      { k:'DISTANCE',    v: r.Distance ? r.Distance.toFixed(2)+' mi' : '—' },
+      { k:'AVG PACE',    v: r.pace_sec ? secToMin(r.pace_sec)+'/mi' : '—' },
+      { k:'ELEVATION',   v: r.ascent && parseInt(r.ascent)>0 ? parseInt(r.ascent).toLocaleString()+' ft' : '—' },
+      { k:'CADENCE',     v: r.cadence ? r.cadence+' spm' : '—' },
     ];
   }
 }
 
 function buildShareCardHTML(type, style){
-  // Style 13 uses all-time maxes — bypass per-activity getShareData
-  if(style===13){
-    const W=200, H=356;
-    const maxStats = _getMaxStats(type);
-    if(!maxStats) return '<div style="padding:20px;color:#888;font-size:11px;">No data</div>';
-    const actLabel = (type==='run' ? '🏃 RUNNING' : '🚴 CYCLING') + ' · MAX STATS';
-    const rowsHTML = maxStats.map((m,i) => `
-      <div style="display:flex;justify-content:space-between;align-items:baseline;border-top:0.5px solid rgba(255,255,255,${i===0?'0.22':'0.13'});padding:9px 0 0;margin-bottom:10px;">
-        <span style="font-family:'DM Mono',monospace;font-size:6px;letter-spacing:0.18em;color:rgba(255,255,255,0.34);text-shadow:0 1px 6px rgba(0,0,0,0.4);white-space:nowrap;">${m.k}</span>
-        <span style="font-family:'Instrument Serif',serif;font-style:italic;font-size:28px;color:#fff;line-height:1;text-shadow:0 1px 12px rgba(0,0,0,0.4);margin-left:8px;">${m.v}</span>
-      </div>`).join('');
-    return `<div style="width:${W}px;height:${H}px;position:relative;display:flex;flex-direction:column;justify-content:flex-end;padding:0 16px 18px;background:transparent;color:#fff;">
-      <div style="font-family:'DM Mono',monospace;font-size:6.5px;letter-spacing:0.2em;color:rgba(255,255,255,0.45);text-shadow:0 1px 8px rgba(0,0,0,0.4);margin-bottom:14px;">${actLabel}</div>
-      ${rowsHTML}
-    </div>`;
-  }
-
   const d = getShareData(type);
   if(!d) return '<div style="padding:20px;color:#888;font-size:11px;">No data</div>';
   const { emoji, typeLabel, dateStr, headline, headlineLabel, time, metrics, dist } = d;
@@ -475,6 +448,22 @@ function buildShareCardHTML(type, style){
         <div style="font-family:'Instrument Serif',serif;font-style:italic;font-size:38px;line-height:0.95;letter-spacing:-0.02em;text-shadow:0 2px 8px rgba(0,0,0,0.55);">${hero}</div>
         ${sub?`<div style="font-family:'DM Mono',monospace;font-size:8.5px;letter-spacing:0.22em;margin-top:6px;opacity:0.9;text-shadow:0 1px 6px rgba(0,0,0,0.45);">${sub.toUpperCase()}</div>`:''}
       </div>
+    </div>`;
+  }
+
+  if(style===13){
+    // ── Activity max stats — per-activity peaks, transparent overlay ──
+    const maxStats = _getActivityMaxStats(d.r, d.isRun);
+    if(!maxStats) return '<div style="padding:20px;color:#888;font-size:11px;">No data</div>';
+    const actLabel = (d.isRun ? '🏃 RUNNING' : '🚴 CYCLING') + ' · MAX STATS';
+    const rowsHTML = maxStats.map((m,i) => `
+      <div style="display:flex;justify-content:space-between;align-items:baseline;border-top:0.5px solid rgba(255,255,255,${i===0?'0.22':'0.13'});padding:9px 0 0;margin-bottom:10px;">
+        <span style="font-family:'DM Mono',monospace;font-size:6px;letter-spacing:0.18em;color:rgba(255,255,255,0.34);text-shadow:0 1px 6px rgba(0,0,0,0.4);white-space:nowrap;">${m.k}</span>
+        <span style="font-family:'Instrument Serif',serif;font-style:italic;font-size:28px;color:#fff;line-height:1;text-shadow:0 1px 12px rgba(0,0,0,0.4);margin-left:8px;">${m.v}</span>
+      </div>`).join('');
+    return `<div style="width:${W}px;height:${H}px;position:relative;display:flex;flex-direction:column;justify-content:flex-end;padding:0 16px 18px;background:transparent;color:#fff;">
+      <div style="font-family:'DM Mono',monospace;font-size:6.5px;letter-spacing:0.2em;color:rgba(255,255,255,0.45);text-shadow:0 1px 8px rgba(0,0,0,0.4);margin-bottom:14px;">${actLabel} · ${dateStr.toUpperCase()}</div>
+      ${rowsHTML}
     </div>`;
   }
 
@@ -1102,11 +1091,11 @@ async function downloadShareCard(){
   }
 
   if(_shareStyle===13){
-    // All-time max stats — transparent overlay, 4 editorial rows
-    const maxStats = _getMaxStats(_shareType);
+    // Activity max stats — per-activity peaks, transparent overlay, 4 editorial rows
+    const maxStats = _getActivityMaxStats(r, isRun);
     if(maxStats){
       const px=28*scale;
-      const actLabel=(_shareType==='run' ? 'RUNNING' : 'CYCLING')+' · MAX STATS';
+      const actLabel=(_shareType==='run' ? 'RUNNING' : 'CYCLING')+' · MAX STATS · '+dateStr.toUpperCase();
       const rowH=82*scale;
       const baseY=H-54*scale;
       ctx.textBaseline='top';

@@ -180,7 +180,7 @@ function renderSplitsTab(laps, actType) {
         <td>${lap.norm_power_w ? lap.norm_power_w+'w' : '—'}</td>
         <td>${lap.calories ?? '—'}</td>
         <td>${lap.ascent_ft ? Math.round(lap.ascent_ft)+'ft' : '—'}</td>
-        <td>${lap.avg_temp_c != null ? lap.avg_temp_c+'°C' : '—'}</td>
+        <td>${lap.avg_temp_c != null ? Math.round(lap.avg_temp_c*9/5+32)+'°F' : '—'}</td>
       </tr>`;
     } else {
       const spd = lap.speed_mph != null ? lap.speed_mph.toFixed(1)+' mph' : '—';
@@ -195,7 +195,7 @@ function renderSplitsTab(laps, actType) {
         <td>${lap.norm_power_w ? lap.norm_power_w+'w' : '—'}</td>
         <td>${lap.calories ?? '—'}</td>
         <td>${lap.ascent_ft ? Math.round(lap.ascent_ft)+'ft' : '—'}</td>
-        <td>${lap.avg_temp_c != null ? lap.avg_temp_c+'°C' : '—'}</td>
+        <td>${lap.avg_temp_c != null ? Math.round(lap.avg_temp_c*9/5+32)+'°F' : '—'}</td>
       </tr>`;
     }
   });
