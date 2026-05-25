@@ -214,7 +214,53 @@ const BRAND_HTML = '<div style="display:flex;justify-content:space-between;align
   + '<span style="font-size:6px;letter-spacing:0.06em;color:rgba(255,255,255,0.18);">training.edgarmolina.com</span>'
   + '</div>';
 
+function _getMaxStats(type){
+  const isRun = type === 'run';
+  const items = (isRun ? analyticsRuns : analyticsCycles).filter(r => (r.Distance||0) > 0);
+  if(!items.length) return null;
+  const maxDist = Math.max(...items.map(r => r.Distance||0));
+  if(!isRun){
+    const maxSpd  = Math.max(...items.map(r => r.max_speed||0));
+    const maxPwr  = Math.max(...items.map(r => r.max_power||0));
+    const maxElev = Math.max(...items.map(r => parseInt(r.ascent||0)));
+    return [
+      { k:'MAX DISTANCE', v: maxDist.toFixed(2)+' mi' },
+      { k:'MAX SPEED',    v: maxSpd.toFixed(1)+' mph' },
+      { k:'MAX POWER',    v: maxPwr+' W' },
+      { k:'MAX ELEVATION',v: maxElev.toLocaleString()+' ft' },
+    ];
+  } else {
+    const paces      = items.filter(r=>(r.pace_sec||0)>0).map(r=>r.pace_sec);
+    const bestPace   = paces.length ? Math.min(...paces) : 0;
+    const maxElev    = Math.max(...items.map(r => parseInt(r.ascent||0)));
+    const maxCadence = Math.max(...items.map(r => r.cadence||0));
+    return [
+      { k:'MAX DISTANCE', v: maxDist.toFixed(2)+' mi' },
+      { k:'BEST PACE',    v: bestPace ? secToMin(bestPace)+'/mi' : '—' },
+      { k:'MAX ELEVATION',v: maxElev.toLocaleString()+' ft' },
+      { k:'MAX CADENCE',  v: maxCadence+' spm' },
+    ];
+  }
+}
+
 function buildShareCardHTML(type, style){
+  // Style 13 uses all-time maxes — bypass per-activity getShareData
+  if(style===13){
+    const W=200, H=356;
+    const maxStats = _getMaxStats(type);
+    if(!maxStats) return '<div style="padding:20px;color:#888;font-size:11px;">No data</div>';
+    const actLabel = (type==='run' ? '🏃 RUNNING' : '🚴 CYCLING') + ' · MAX STATS';
+    const rowsHTML = maxStats.map((m,i) => `
+      <div style="display:flex;justify-content:space-between;align-items:baseline;border-top:0.5px solid rgba(255,255,255,${i===0?'0.22':'0.13'});padding:9px 0 0;margin-bottom:10px;">
+        <span style="font-family:'DM Mono',monospace;font-size:6px;letter-spacing:0.18em;color:rgba(255,255,255,0.34);text-shadow:0 1px 6px rgba(0,0,0,0.4);white-space:nowrap;">${m.k}</span>
+        <span style="font-family:'Instrument Serif',serif;font-style:italic;font-size:28px;color:#fff;line-height:1;text-shadow:0 1px 12px rgba(0,0,0,0.4);margin-left:8px;">${m.v}</span>
+      </div>`).join('');
+    return `<div style="width:${W}px;height:${H}px;position:relative;display:flex;flex-direction:column;justify-content:flex-end;padding:0 16px 18px;background:transparent;color:#fff;">
+      <div style="font-family:'DM Mono',monospace;font-size:6.5px;letter-spacing:0.2em;color:rgba(255,255,255,0.45);text-shadow:0 1px 8px rgba(0,0,0,0.4);margin-bottom:14px;">${actLabel}</div>
+      ${rowsHTML}
+    </div>`;
+  }
+
   const d = getShareData(type);
   if(!d) return '<div style="padding:20px;color:#888;font-size:11px;">No data</div>';
   const { emoji, typeLabel, dateStr, headline, headlineLabel, time, metrics, dist } = d;
@@ -1053,6 +1099,46 @@ async function downloadShareCard(){
     ctx.fillStyle='rgba(255,255,255,0.38)';ctx.font=`${6*scale}px 'DM Mono',monospace`;ctx.textAlign='left';ctx.textBaseline='top';
     ctx.fillText(`${dow} · ${dateStr.toUpperCase()}`,px,distRuleY-28*scale);
     ctx.shadowColor='transparent';ctx.shadowBlur=0;
+  }
+
+  if(_shareStyle===13){
+    // All-time max stats — transparent overlay, 4 editorial rows
+    const maxStats = _getMaxStats(_shareType);
+    if(maxStats){
+      const px=28*scale;
+      const actLabel=(_shareType==='run' ? 'RUNNING' : 'CYCLING')+' · MAX STATS';
+      const rowH=82*scale;
+      const baseY=H-54*scale;
+      ctx.textBaseline='top';
+      // Rows from bottom-most to top-most
+      [...maxStats].reverse().forEach((m,ri)=>{
+        const i=maxStats.length-1-ri;
+        const ry=baseY-(maxStats.length-i)*rowH;
+        // Rule — slightly brighter for the first (topmost) row
+        ctx.strokeStyle=ri===maxStats.length-1 ? 'rgba(255,255,255,0.22)' : 'rgba(255,255,255,0.13)';
+        ctx.lineWidth=0.5*scale;
+        ctx.beginPath();ctx.moveTo(px,ry);ctx.lineTo(W-px,ry);ctx.stroke();
+        // Stat label
+        ctx.fillStyle='rgba(255,255,255,0.34)';
+        ctx.font=`${6*scale}px 'DM Mono',monospace`;
+        ctx.textAlign='left';
+        ctx.shadowColor='rgba(0,0,0,0.45)';ctx.shadowBlur=6*scale;
+        ctx.fillText(m.k,px,ry+14*scale);
+        // Stat value
+        ctx.fillStyle='#fff';
+        ctx.font=`italic ${28*scale}px 'Instrument Serif',serif`;
+        ctx.textAlign='right';
+        ctx.shadowBlur=16*scale;
+        ctx.fillText(m.v,W-px,ry+6*scale);
+      });
+      // Activity label above the rows
+      ctx.fillStyle='rgba(255,255,255,0.45)';
+      ctx.font=`${6*scale}px 'DM Mono',monospace`;
+      ctx.textAlign='left';
+      ctx.shadowBlur=6*scale;
+      ctx.fillText(actLabel,px,baseY-maxStats.length*rowH-22*scale);
+      ctx.shadowColor='transparent';ctx.shadowBlur=0;
+    }
   }
 
   const filename=`emth-${_shareType}-${new Date(r.Date||r.date).toISOString().slice(0,10)}-style${_shareStyle}.png`;
