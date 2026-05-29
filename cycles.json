@@ -739,5 +739,24 @@
     "calories": 1805,
     "aerobic_te": 4.0,
     "is_race": false
+  },
+  {
+    "garmin_id": 23045424679,
+    "Date": "2026-05-28 07:58:00",
+    "Title": "Cycling 2026-05-28",
+    "Distance": 13.67,
+    "Time": "00:48:11",
+    "ActivityType": "Virtual Cycling",
+    "avg_speed": 17.0,
+    "max_speed": 27.3,
+    "hr": 117,
+    "max_hr": 131,
+    "cadence": 80,
+    "avg_power": 119,
+    "max_power": 163,
+    "ascent": "325",
+    "calories": 330,
+    "aerobic_te": 0.0,
+    "is_race": false
   }
 ]

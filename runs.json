@@ -2707,5 +2707,26 @@
     "calories": 612,
     "aerobic_te": 3.5,
     "is_race": false
+  },
+  {
+    "garmin_id": 23057152199,
+    "Date": "2026-05-29 07:49:36",
+    "Title": "Easy Run - 3mi",
+    "Distance": 3.02,
+    "Time": "00:30:08",
+    "ActivityType": "Running",
+    "pace_sec": 598,
+    "hr": 140,
+    "max_hr": 148,
+    "cadence": 174,
+    "left_pct": 46.95,
+    "vo": 9.4,
+    "gct": 264,
+    "stride_len": 1.01,
+    "vert_ratio": 9.7,
+    "ascent": "33",
+    "calories": 365,
+    "aerobic_te": 2.8,
+    "is_race": false
   }
 ]
