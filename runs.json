@@ -2833,5 +2833,26 @@
     "calories": 610,
     "aerobic_te": 3.3,
     "is_race": false
+  },
+  {
+    "garmin_id": 23153437097,
+    "Date": "2026-06-06 06:43:17",
+    "Title": "Long Run - 13mi",
+    "Distance": 13.14,
+    "Time": "01:57:57",
+    "ActivityType": "Running",
+    "pace_sec": 538,
+    "hr": 148,
+    "max_hr": 166,
+    "cadence": 181,
+    "left_pct": 47.6,
+    "vo": 9.1,
+    "gct": 252,
+    "stride_len": 0.99,
+    "vert_ratio": 9.0,
+    "ascent": "171",
+    "calories": 1530,
+    "aerobic_te": 4.7,
+    "is_race": false
   }
 ]
