@@ -118,6 +118,7 @@
 <div class="tab-nav">
   <button class="tab-btn active" data-action="show-tab" data-tab="plan">Training Plan <span class="tab-count">15 wks</span></button>
   <button class="tab-btn" data-action="show-tab" data-tab="analytics">Analytics <span class="tab-count" id="analyticsCount">loading…</span></button>
+  <button class="tab-btn" data-action="show-tab" data-tab="suggestions">Plan Adjustments <span class="tab-count" id="suggestionsCount">—</span></button>
 </div>
 
 <!-- ══ PLAN TAB ══ -->
@@ -429,9 +430,15 @@
 
 </div>
 
+<!-- ══ PLAN ADJUSTMENTS TAB ══ -->
+<div class="tab-panel" id="tab-suggestions">
+  <!-- Populated by renderSuggestionsTab() in js/suggestions.js -->
+</div>
+
 <script defer src="js/data.js"></script>
 <script defer src="js/plan.js"></script>
 <script defer src="js/analytics.js"></script>
+<script defer src="js/suggestions.js"></script>
 <script defer src="js/app.js"></script>
 <script defer src="js/db.js"></script>
 

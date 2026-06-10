@@ -19,6 +19,7 @@ training-db/
 │   ├── data.js         — State, CSV parsing, Garmin upload, cloud persistence
 │   ├── plan.js         — Training plan rendering + plan health
 │   ├── analytics.js    — Analytics + charts + snapshots + share cards
+│   ├── suggestions.js  — Plan-adjustment rule engine (Plan Adjustments tab)
 │   ├── app.js          — Event dispatcher, tab switching, init/bootstrap
 │   ├── db.js           — Local DB integration + inline activity detail dropdown
 │   └── map.js          — Leaflet map tab
@@ -152,6 +153,32 @@ Each section header shows an at-a-glance KPI summary when collapsed (e.g. "lates
 | **Form Drift** | First vs last mile: HR, GCT, left balance, VO, power |
 
 Form Drift tab hidden for cycling activities. The standalone Map view lives in its own top-level tab (Leaflet pace heatmap, green=fast → amber=mid → coral=slow).
+
+---
+
+### 🧭 Plan Adjustments
+
+A third top-level tab that reads your completed activities and produces structured plan-change suggestions with rationale. Nothing is auto-applied — each suggestion has **Accept** and **Dismiss** buttons, with state persisted in `localStorage` so actioned suggestions don't reappear. Each card shows:
+
+- **Priority** (high · medium · info) drives the left-border color and sort order
+- **Category** (race · volume · cycling · pace · affirm)
+- **Current vs Proposed** — exact value change being recommended
+- **Affected sessions** — which plan weeks/days the suggestion touches
+- **Rationale** — multi-sentence explanation of *why*, including the data behind it
+
+Current rules (`js/suggestions.js`):
+
+| Rule | Fires when | Output |
+|------|------------|--------|
+| Race recalibration | Most recent race ≥3 mi projects an MP via Riegel (1.06 exp) that's >10s off the prescribed MP | Suggest shifting MP segments in upcoming Saturday long runs |
+| Volume execution | Last 4 weeks hit ≥95% of planned mileage | Affirm; flag eligibility for 5% bump |
+| Volume misses | 2+ recent weeks under 80% of planned | Suggest scaling the next long run by 10–15% |
+| Cycling drift | 2+ recent weeks logged >2× planned cycling hours | Suggest a weekly cap or formalizing long-ride slots in recovery weeks |
+| Long-run progression | Last 3 long runs hit prescribed distance | Affirm; stay the course |
+
+Adding a new rule: write a `ruleXxx(ctx)` function returning suggestion objects with stable `id`s, then add it to the `RULES` array at the bottom of the file.
+
+The tab-count chip ("3 new") refreshes after activity data loads.
 
 ---
 

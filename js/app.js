@@ -69,6 +69,10 @@ const CLICK_ACTIONS = {
     const src = el.dataset.source === 'cycle' ? window._cycleTableRows : window._tableRows;
     openShareModal(el.dataset.shareType, src?.[idx]);
   },
+  // Plan-adjustments suggestion tab
+  'accept-suggestion':      el => acceptSuggestion(el.dataset.sid),
+  'dismiss-suggestion':     el => dismissSuggestion(el.dataset.sid),
+  'reopen-suggestion':      el => reopenSuggestion(el.dataset.sid),
 };
 
 document.addEventListener('click', e => {
@@ -185,9 +189,22 @@ function showTab(id, btn) {
     const labels = {all:'All <span>Analytics</span>', running:'Running <span>Analytics</span>', cycling:'Cycling <span>Analytics</span>'};
     title.innerHTML = labels[activeView] || 'All <span>Analytics</span>';
   }
+  else if(id === 'suggestions') title.innerHTML = 'Plan <span>Adjustments</span>';
   if(id==='analytics'){
     setAnalyticsPage(analyticsPage, document.querySelector('.anav.active'));
   }
+  if(id==='suggestions' && typeof renderSuggestionsTab === 'function'){
+    renderSuggestionsTab();
+  }
+}
+
+// Update the tab-count chip for Plan Adjustments. Called after data loads.
+function refreshSuggestionsCount() {
+  const el = document.getElementById('suggestionsCount');
+  if(!el || typeof evaluateSuggestions !== 'function') return;
+  const all = evaluateSuggestions();
+  const pending = all.filter(s => s.state.status === 'pending').length;
+  el.textContent = pending ? `${pending} new` : 'none';
 }
 
 
@@ -215,6 +232,7 @@ async function loadBuiltinData() {
   const countEl = document.getElementById('analyticsCount');
   if (countEl) countEl.textContent =
     BUILTIN_RUNS.length + ' runs · ' + BUILTIN_CYCLES.length + ' rides';
+  refreshSuggestionsCount();
 }
 
 // ── URL state / deep linking ──
@@ -230,6 +248,9 @@ function applyURLState(){
       const navBtn=document.querySelector(`.anav[data-page="${page}"]`);
       if(navBtn) setAnalyticsPage(page,navBtn);
     }
+  } else if(tab==='suggestions'){
+    const tabBtn=document.querySelector('.tab-btn[data-tab="suggestions"]');
+    if(tabBtn) showTab('suggestions',tabBtn);
   }
 }
 
