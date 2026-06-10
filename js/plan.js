@@ -154,7 +154,7 @@ const WEEKS = [
       { name:'Mon', type:'cycle+strength', title:'Cycling — 50 min + Strength A', detail:'50 min cycling. Strength A with added resistance on all banded exercises.', stats:'50 min cycling · Strength A' },
       { name:'Tue', type:'run', title:'Tempo Run — 8 miles', detail:'2 mi easy → 4 mi tempo (8:00–8:10/mi) → 2 mi easy.', stats:'8 mi · 4 mi @ 8:00–8:10' },
       { name:'Wed', type:'run+strength', title:'Easy Run — 6 miles + Strength B', detail:'9:00–9:30/mi recovery run. Strength B after.', stats:'6 mi easy · Strength B' },
-      { name:'Thu', type:'run', title:'1km Repeats — 7 miles', detail:'2 mi easy → 5×1km at 8:05–8:20/mi with 90 sec recovery → 2 mi easy.', stats:'7 mi · 5×1km' },
+      { name:'Thu', type:'run', title:'1km Repeats — 7 miles', detail:'2 mi easy → 5×1km at 7:45–7:55/mi with 2:00 jog recovery → 2 mi easy. Even splits rep 1 through 5 are the only goal — if rep 1 feels embarrassingly easy, good. Aerobic fitness is ahead of the plan, so the pace nudges down; the 2:00 jog recovery (vs the original 90s) matters more — 1km reps take longer to recover from than 800s. Carry water or plan the route past a fountain — July heat is coming.', stats:'7 mi · 5×1km @ 7:45–7:55 · 2:00 jog' },
       { name:'Fri', type:'run', title:'Easy Shakeout — 3 miles', detail:'10:00–10:30/mi, very easy pre-long-run shakeout.', stats:'3 mi · very easy' },
       { name:'Sat', type:'run', title:'Long Run — 14 miles with MP finish', detail:'Miles 1–10 easy (9:00–9:30/mi), miles 11–14 at marathon pace (9:00–9:10/mi). Fuel every 45 min.', stats:'14 mi · MP last 4' },
       { name:'Sun', type:'rest', title:'Rest day', detail:'Full rest. Two quality sessions and a 14-miler this week — the body needs today completely off.', stats:'Rest · recovery day' },
@@ -167,7 +167,7 @@ const WEEKS = [
     days:[
       { name:'Mon', type:'cycle+strength', title:'Cycling — 55 min + Strength B', detail:'55 min cycling Z1–Z2. Strength B — Copenhagen planks should feel challenging by now.', stats:'55 min cycling · Strength B' },
       { name:'Tue', type:'run', title:'Easy Run — 7 miles', detail:'9:00–9:30/mi, HR ≤148. If temp is above 75°F by the time you run, allow up to 10:00/mi.', stats:'7 mi · HR ≤148' },
-      { name:'Wed', type:'run+strength', title:'Rolling 800s — 7 miles + Strength A', detail:'2 mi easy → 5×800m at 3:55–4:05 (7:50–8:10/mi) with 90 sec jog recovery → 2 mi easy. Strength A.', stats:'7 mi · 5×800m · Strength A' },
+      { name:'Wed', type:'run+strength', title:'Rolling 800s — 7 miles + Strength A', detail:'2 mi easy → 5×800m at 3:20–3:30 (6:40–7:00/mi) with 90 sec jog recovery → 2 mi easy. "Rolling" = jog recovery, no stopping — the moving recovery is the constraint that makes the pace honest. Start rep 1 at 3:30 and let the back half of the set tell you if 3:20 is available. Even splits across all 5 reps. Strength A after.', stats:'7 mi · 5×800m @ 3:20–3:30 · Strength A' },
       { name:'Thu', type:'cycle', title:'Cycling — 65 min', detail:'Z1–Z2. Active recovery from Wednesday. Stay hydrated — July heat.', stats:'65 min' },
       { name:'Fri', type:'run', title:'Easy Run — 7 miles + strides', detail:'9:00–9:30/mi. 6 strides. Monitor how legs feel — big long run tomorrow.', stats:'7 mi + strides' },
       { name:'Sat', type:'run', title:'Long Run — 18 miles', detail:'Start at 7:00am. Miles 1–15 easy (9:00–9:30/mi), miles 16–18 at marathon pace (9:00–9:10/mi). Fuel at 45, 90, 120 min. This is a landmark run.', stats:'18 mi · MP last 3 · early start' },
