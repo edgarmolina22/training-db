@@ -264,6 +264,7 @@ function handleGarminUpload(file) {
     document.getElementById('analyticsCount').textContent=analyticsRuns.length+' runs · '+analyticsCycles.length+' rides';
     renderPlan();
     renderAnalytics();
+    if(typeof refreshSuggestionsCount === 'function') refreshSuggestionsCount();
     status.textContent='Saving to cloud…';
     status.className='upload-status';
     await saveToCloud();
@@ -374,6 +375,7 @@ async function loadFromCloud() {
     dismissOverlay();
     renderPlan();
     renderAnalytics();
+    if(typeof refreshSuggestionsCount === 'function') refreshSuggestionsCount();
   } catch(e) {
     clearTimeout(safetyTimer);
     dismissOverlay();
@@ -397,6 +399,7 @@ function clearGarmin() {
   saveToCloud();
   renderPlan();
   renderAnalytics();
+  if(typeof refreshSuggestionsCount === 'function') refreshSuggestionsCount();
 }
 
 
