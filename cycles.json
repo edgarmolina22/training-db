@@ -1081,5 +1081,43 @@
     "calories": 1744,
     "aerobic_te": 4.3,
     "is_race": false
+  },
+  {
+    "garmin_id": 23518002764,
+    "Date": "2026-07-07 18:13:52",
+    "Title": "Cycling 2026-07-07",
+    "Distance": 28.21,
+    "Time": "01:29:42",
+    "ActivityType": "Road Cycling",
+    "avg_speed": 18.9,
+    "max_speed": 40.4,
+    "hr": 150,
+    "max_hr": 165,
+    "cadence": 87,
+    "avg_power": 187,
+    "max_power": 605,
+    "ascent": "1207",
+    "calories": 1134,
+    "aerobic_te": 4.0,
+    "is_race": false
+  },
+  {
+    "garmin_id": 23573164237,
+    "Date": "2026-07-12 07:10:07",
+    "Title": "Cycling 2026-07-12",
+    "Distance": 41.04,
+    "Time": "02:22:37",
+    "ActivityType": "Road Cycling",
+    "avg_speed": 17.3,
+    "max_speed": 41.0,
+    "hr": 132,
+    "max_hr": 166,
+    "cadence": 80,
+    "avg_power": 151,
+    "max_power": 604,
+    "ascent": "1391",
+    "calories": 1497,
+    "aerobic_te": 3.5,
+    "is_race": false
   }
 ]
